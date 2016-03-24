@@ -9,6 +9,11 @@ function HTMLElement(document, name, namespaceURI) {
 }
 
 HTMLElement.prototype = Object.create(Element.prototype, {
+    lang: {
+        get: function() {
+            return this.getAttribute('lang');
+        }
+    },
     style: {
         get: function() {
             if (this._style) {
@@ -26,7 +31,38 @@ HTMLElement.prototype = Object.create(Element.prototype, {
         }
     },
 
-    // TODO 需要迁移至 HTMLInputElement 等拥有该属性的元素的构造器
+    // TODO 需要迁移至 HTMLImageElement 等拥有该属性的元素的构造器
+    // ---------------------------------------------
+    src: {
+        get: function() {
+            switch (this.nodeName) {
+                case 'SCRIPT':
+                case 'IMG':
+                case 'IFRAME':
+                case 'EMBED':
+                    var src = this.getAttribute('src');
+                    if (src) {
+                        return url.resolve(this.ownerDocument.baseURI, src);
+                    }
+            }
+        }
+    },
+    href: {
+        get: function() {
+            switch (this.nodeName) {
+                case 'A':
+                case 'LINK':
+                    var href = this.getAttribute('href');
+                    if (href) {
+                        return url.resolve(this.ownerDocument.baseURI, href);
+                    }
+                    break;
+                case 'BASE':
+                    return this.getAttribute('href');
+            }
+        }
+    },
+    // 这里主要是让 nwmatcher 支持高级 CSS 选择器
     // ---------------------------------------------
     disabled: {
         get: function() {
@@ -66,7 +102,7 @@ HTMLElement.prototype = Object.create(Element.prototype, {
                 return this.getAttribute('value') || '';
             } else if (this.nodeName === 'TEXTAREA') {
                 return this.textContent || '';
-            } else if(this.nodeName === 'OPTION') {
+            } else if (this.nodeName === 'OPTION') {
                 return this.hasAttribute('value') ? this.getAttribute('value') : this.innerHTML;
             }
         }
@@ -84,34 +120,6 @@ HTMLElement.prototype = Object.create(Element.prototype, {
             }
 
             return null;
-        }
-    },
-    src: {
-        get: function() {
-
-            // ['SCRIPT', 'IMG', 'IFRAME', 'EMBED']
-
-            var src = this.getAttribute('src');
-
-            if (src) {
-                return url.resolve(this.ownerDocument.baseURI, src);
-            } else {
-                return '';
-            }
-        }
-    },
-    href: {
-        get: function() {
-
-            // ['A', 'LINK', 'BASE']
-
-            var href = this.getAttribute('href');
-
-            if (href) {
-                return this.nodeName === 'BASE' ? href : url.resolve(this.ownerDocument.baseURI, href);
-            } else {
-                return '';
-            }
         }
     }
     // ---------------------------------------------

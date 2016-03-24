@@ -25,12 +25,12 @@ Resource.prototype.get = function(file, callback) {
 
     var resource;
     var options = this.options;
-    var cache = options.cache;
+    var resourceCache = options.resourceCache;
     var that = this;
 
     options.resourceBeforeLoad(file);
 
-    if (cache) {
+    if (resourceCache) {
         resource = this.cache[file];
         if (resource) {
             return resource;
@@ -64,7 +64,7 @@ Resource.prototype.get = function(file, callback) {
     });
 
 
-    if (cache) {
+    if (resourceCache) {
         this.cache[file] = resource;
     }
 
@@ -80,7 +80,7 @@ Resource.prototype.loadLocalFile = function(file, callback) {
 
 Resource.prototype.loadRemoteFile = function(file, callback) {
 
-    file = this.options.map(file);
+    file = this.options.resourceMap(file);
 
     var location = url.parse(file);
     var protocol = location.protocol === 'http:' ? http : https;
@@ -165,8 +165,8 @@ Resource.prototype.loadRemoteFile = function(file, callback) {
  * 默认选项
  */
 Resource.defaults = {
-    cache: false,
-    map: function(url) {
+    resourceCache: false,
+    resourceMap: function(url) {
         return url;
     },
     resourceBeforeLoad: function() {}

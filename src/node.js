@@ -133,7 +133,7 @@ Node.prototype.removeChild = function(oldChild) {
     }
 
     // TODO 性能优化
-    Array.prototype.splice.call(this.childNodes, Array.prototype.indexOf.call(node), 1);
+    Array.prototype.splice.call(this.childNodes, Array.prototype.indexOf.call(oldChild), 1);
 
     if (oldChild._previous) {
         oldChild._previous._next = oldChild._next;

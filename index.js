@@ -24,6 +24,8 @@ module.exports = function browser(html, options, callback) {
         document.defaultView = window;
         window.document = document;
 
+        nwmatcherFix(window);
+
         if (options.loadCssFile) {
             loadCssFiles(document, new Resource(options)).then(function() {
                 resolve(window);
@@ -53,4 +55,18 @@ function Window() {
     this.CSSImportRule = cssom.CSSImportRule;
     this.CSSStyleDeclaration = cssstyle.CSSStyleDeclaration;
     this.getComputedStyle = getComputedStyle;
+}
+
+function nwmatcherFix(window) {
+    var document = window.document;
+
+    // :target 选择器支持
+    window.location = document.location = {
+        hash: ''
+    };
+
+    // 避免判断为低版本浏览器
+    document.constructor.prototype.addEventListener = function() {
+        throw new Error('not yet implemented');
+    };
 }

@@ -150,12 +150,6 @@ function matcher(element) {
         value: matcher
     });
 
-
-    // needed for nwmatcher IE9 check
-    document.constructor.prototype.addEventListener = function() {
-        throw new Error('not yet implemented');
-    };
-
     return matcher;
 }
 

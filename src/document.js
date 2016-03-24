@@ -16,7 +16,6 @@ function Document(options) {
     this.defaultView = {};
     this._doctype = null;
     this._documentElement = null;
-    this._nwmatcher = null;
     this._styleSheets = null;
     this._parserAdapter = options.parserAdapter;
     this._URL = options.url || '';
@@ -104,11 +103,6 @@ Document.prototype.constructor = Document;
 
 Document.prototype._setDocumentType = function(name, publicId, systemId) {
     this._doctype = new DocumentType(this, name, publicId, systemId);
-};
-
-// needed for nwmatcher IE9 check
-Document.prototype.addEventListener = function() {
-    throw new Error('not yet implemented');
 };
 
 Document.prototype.createElement = function(tagName) {

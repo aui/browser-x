@@ -53,7 +53,7 @@ function normalizePseudo(value) {
 
 
 /**
- * 获取元素最终应用样式
+ * 获取元素应用的样式，包括 style 属性、style 与 link 标签所引入的样式
  * @param   {HTMLElement}   元素
  * @param   {String}
  * @return  {CSSStyleDeclaration}

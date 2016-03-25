@@ -1,7 +1,7 @@
 {
   "name": "browser-little",
-  "version": "0.0.1",
-  "description": "浏览器文档树与样式解析简单实现",
+  "version": "0.0.1-pre",
+  "description": "A partial implementation of the W3C DOM API on top of an HTML5 parser and serializer.",
   "main": "index.js",
   "dependencies": {
     "cssom": "^0.3.1",
@@ -14,5 +14,13 @@
   "scripts": {
     "debug": "inspector test/debug.js",
     "test": "mocha ./test/index"
-  }
+  },
+  "keywords": [
+    "dom",
+    "browser",
+    "cssom",
+    "css",
+    "selector",
+    "spider"
+  ]
 }

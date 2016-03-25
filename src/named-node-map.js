@@ -18,7 +18,7 @@ NamedNodeMap.prototype = Object.create(Object.prototype, {
 
 NamedNodeMap.prototype.constructor = NamedNodeMap;
 
-// TODO This should be made faster.
+// TODO 性能优化
 NamedNodeMap.prototype.getNamedItem = function(name) {
     var node;
     var i = -1;

@@ -45,24 +45,19 @@ ParserAdapter.prototype = {
     },
 
     insertBefore: function(parentNode, newNode, referenceNode) { // jshint ignore:line
-        console.warn('parse5: insertBefore');
         parentNode.insertBefore(parentNode, newNode);
     },
 
     setTemplateContent: function(templateElement, contentElement) { // jshint ignore:line
-        console.warn('parse5: setTemplateContent');
     },
 
-    getTemplateContent: function() {
-        console.warn('parse5: getTemplateContent');
-    },
+    getTemplateContent: function() {},
 
     setDocumentType: function(document, name, publicId, systemId) { // jshint ignore:line
         document._setDocumentType(name, publicId, systemId);
     },
 
     setQuirksMode: function(document) { // jshint ignore:line
-        console.warn('parse5: setQuirksMode');
     },
 
     isQuirksMode: function(document) { // jshint ignore:line
@@ -70,20 +65,17 @@ ParserAdapter.prototype = {
     },
 
     detachNode: function(node) { // jshint ignore:line
-        console.warn('parse5: detachNode');
     },
 
-    // TODO concatenate adjacent text nodes
+    // TODO 串联相邻的文本节点
     insertText: function(node, data) {
         node.appendChild(this.document.createTextNode(data));
     },
 
     insertTextBefore: function(parentNode, text, referenceNode) { // jshint ignore:line
-        console.warn('parse5: insertTextBefore');
     },
 
     adoptAttributes: function(recipientNode, attrs) { // jshint ignore:line
-        console.warn('parse5: adoptAttributes');
     },
 
     getFirstChild: function(node) {
@@ -117,7 +109,7 @@ ParserAdapter.prototype = {
     },
 
     getTagName: function(node) {
-        return node.tagName.toLocaleLowerCase();
+        return node.tagName.toLowerCase();
     },
 
     getNamespaceURI: function(node) {

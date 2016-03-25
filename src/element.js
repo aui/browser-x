@@ -104,7 +104,7 @@ Element.prototype.getElementsByTagName = function(tagName) {
     var nodes = [];
     var child = this.firstChild;
 
-    tagName = tagName.toLocaleUpperCase();
+    tagName = tagName.toUpperCase();
 
     out: while (child) {
 

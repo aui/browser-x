@@ -34,14 +34,14 @@ function browser(html, options, callback) {
 
 
 /**
- * @param   {String}    远程 URL
+ * @param   {String}    页面地址（本地或远程）
  * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
  * @param   {Function}  回调函数（可选）
  * @param   {Promise}
  */
-browser.load = function(url, options, callback) {
+browser.open = function(url, options, callback) {
     options = new BrowserAdapter(options);
-    options.baseUrl = url;
+    options.baseURI = url;
     return (new Resource(options)).get(url).then(function(html) {
         return browser(html, options, callback);
     });

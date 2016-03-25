@@ -73,14 +73,14 @@ Document.prototype = Object.create(Node.prototype, {
             return this.getElementsByTagName('body').item(0);
         }
     },
-    // TODO 外部样式文件
     styleSheets: {
         get: function() {
             if (!this._styleSheets) {
                 this._styleSheets = new StyleSheetList();
-                // TODO link[rel=stylesheet]
+
                 var nodeList = this.querySelectorAll('style,link[rel=stylesheet]:not([disabled])');
-                for (var i = 0; i < nodeList.length; i ++) {
+
+                for (var i = 0; i < nodeList.length; i++) {
 
                     var ownerNode = nodeList.item(i);
                     var textContent = ownerNode.textContent;
@@ -101,17 +101,13 @@ Document.prototype = Object.create(Node.prototype, {
 
 Document.prototype.constructor = Document;
 
-Document.prototype._setDocumentType = function(name, publicId, systemId) {
-    this._doctype = new DocumentType(this, name, publicId, systemId);
-};
-
 Document.prototype.createElement = function(tagName) {
-    tagName = tagName.toLocaleUpperCase();
-    return new HTMLElement(this, tagName, this.documentElement.namespaceURI);
+    var namespaceURI = this.documentElement.namespaceURI;
+    return this.createElementNS(namespaceURI, tagName);
 };
 
 Document.prototype.createElementNS = function(namespaceURI, qualifiedName) {
-    qualifiedName = qualifiedName.toLocaleUpperCase();
+    qualifiedName = qualifiedName.toUpperCase();
     return new HTMLElement(this, qualifiedName, namespaceURI);
 };
 
@@ -139,11 +135,16 @@ Document.prototype.getElementsByTagName = function(tagName) {
 // TODO 性能优化
 Document.prototype.getElementById = function(id) {
     var child = this.firstChild;
+
     out: while (child) {
-        if (child.id === id) return child;
-        if (child.firstChild) child = child.firstChild;
-        else if (child.nextSibling) child = child.nextSibling;
-        else {
+        if (child.id === id) {
+            return child;
+        }
+        if (child.firstChild) {
+            child = child.firstChild;
+        } else if (child.nextSibling) {
+            child = child.nextSibling;
+        } else {
             do {
                 child = child.parentNode;
                 if (child === this) break out;
@@ -161,6 +162,11 @@ Document.prototype.querySelector = function(selector) {
 
 Document.prototype.querySelectorAll = function(selector) {
     return HTMLElement.prototype.querySelectorAll.call(this, selector);
+};
+
+
+Document.prototype._setDocumentType = function(name, publicId, systemId) {
+    this._doctype = new DocumentType(this, name, publicId, systemId);
 };
 
 

@@ -28,13 +28,16 @@ Resource.prototype = {
 
         file = this.normalize(file);
 
+
         var resource;
         var adapter = this.adapter;
         var resourceCache = adapter.resourceCache();
         var that = this;
 
+        file = adapter.resourceMap(file);
+
         if (adapter.resourceIgnore(file)) {
-            Promise.resolve('');
+            return Promise.resolve('');
         }
 
         adapter.resourceBeforeLoad(file);
@@ -58,7 +61,7 @@ Resource.prototype = {
                 if (errors) {
                     reject(errors);
                 } else {
-                    resolve(data);
+                    resolve(data.toString());
                 }
             }
 
@@ -144,7 +147,7 @@ Resource.prototype = {
                                 if (errors) {
                                     callback(errors);
                                 } else {
-                                    callback(null, buffer.toString());
+                                    callback(null, buffer);
                                 }
                             });
 
@@ -154,12 +157,12 @@ Resource.prototype = {
                                 if (errors) {
                                     callback(errors);
                                 } else {
-                                    callback(null, decoded.toString());
+                                    callback(null, decoded);
                                 }
                             });
 
                         } else {
-                            callback(null, buffer.toString());
+                            callback(null, buffer);
                         }
 
                     });

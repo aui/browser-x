@@ -4,6 +4,9 @@ var specificity = require('specificity');
 var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
 var eachCssStyleRule = require('./each-css-style-rule');
 
+/**
+ * 获取优先级
+ */
 function getSpecificity(selectorText) {
     return specificity
         .calculate(selectorText)[0]
@@ -14,6 +17,10 @@ function getSpecificity(selectorText) {
         });
 }
 
+
+/**
+ * 优先级比较算法
+ */
 function compareSpecificity(first, second) {
     for (var i = 0; i < first.length; i++) {
         var a = first[i];
@@ -29,10 +36,19 @@ function compareSpecificity(first, second) {
     return 0;
 }
 
-function cascade(node, pseudo) {
 
-    var cacheKey = '_cascade' +
-        (pseudo ? pseudo.replace(/\:+$/, '') : '');
+/**
+ * 获取标准化伪元素名称
+ */
+function normalizePseudo(value) {
+    return value ? value.toLowerCase().replace(/\:+(\w+)$/, '$1') : '';
+}
+
+
+function cascade(node, pseudo) {
+    pseudo = normalizePseudo(pseudo);
+
+    var cacheKey = '_cascade::' + pseudo;
 
     if (node[cacheKey]) {
         return node[cacheKey];
@@ -43,16 +59,13 @@ function cascade(node, pseudo) {
     var style = new CSSStyleDeclaration();
     var importants = {};
     var forEach = Array.prototype.forEach;
-    var pseudoRe = pseudo ? new RegExp('\\:*' + pseudo + '$', 'i') : null;
+    var pseudoRe = pseudo ? new RegExp('\\:+' + pseudo + '$', 'i') : null;
 
     // 行内样式
-    if (!pseudo && node.style) {
-        cssStyleDeclarations.push(node.style);
-        if (!node.style._specificity) {
-            node.style._specificity = [1, 0, 0, 0];
-        }
+    cssStyleDeclarations.push(node.style);
+    if (!node.style._specificity) {
+        node.style._specificity = [1, 0, 0, 0];
     }
-
 
     // 非行内样式
     // StyleSheetList > CSSStyleSheet.cssRules > CSSStyleRule
@@ -75,7 +88,10 @@ function cascade(node, pseudo) {
 
     function matches(node, selector) {
         if (pseudoRe) {
-            selector = selector.replace(pseudoRe, '');
+            // *::after
+            // ::after
+            // element::after
+            selector = selector.replace(pseudoRe, '') || '*';
         }
         try {
             return node.matches(selector);

@@ -43,5 +43,6 @@ module.exports = function getComputedStyle(node, pseudo) {
         });
     }
 
+
     return currentStyle;
 };

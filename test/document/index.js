@@ -5,6 +5,7 @@ var assert = require('assert');
 
 describe('Document', function() {
 
+    var baseUrl = 'http://font-spider.org';
     var html = '<!DOCTYPE html>' +
         '<html lang="en">' +
         '<head>' +
@@ -14,36 +15,47 @@ describe('Document', function() {
         '<body></body>' +
         '</html>';
 
+    var window = browser.sync(html, {
+        url: baseUrl + '/index.html',
+        loadCssFile: false
+    });
+    var document = window.document;
 
     it('#nodeName', function() {
-        return browser(html).then(function(window) {
-            assert.equal('#document', window.document.nodeName);
-        });
+        assert.equal('#document', window.document.nodeName);
     });
 
+    it('document.documentElement', function() {
+        assert.equal('HTML', document.documentElement.nodeName);
+    });
+
+    it('document.head', function() {
+        assert.equal('HEAD', document.head.nodeName);
+    });
+
+    it('document.body', function() {
+        assert.equal('BODY', document.body.nodeName);
+    });
 
     describe('#createElement()', function() {
-        it('创建元素', function() {
-            return browser(html).then(function(window) {
-                var document = window.document;
-                var div = document.createElement('div');
 
-                div.setAttribute('id', 'test');
-                assert.equal('test', div.getAttribute('id'));
-            });
-
+        it('document.createElement("div")', function() {
+            var div = document.createElement('div');
+            assert.equal('DIV', div.nodeName);
+            assert.equal(false, !!div.parentNode);
         });
-    });
 
+        it('document.createElement("DIV")', function() {
+            var div = document.createElement('DIV');
+            assert.equal('DIV', div.nodeName);
+        });
 
-    describe('#documentElement, #head, #body', function() {
-        it('节点', function() {
-            return browser(html).then(function(window) {
-                var document = window.document;
-                assert.equal('HTML', document.documentElement.nodeName);
-                assert.equal('HEAD', document.head.nodeName);
-                assert.equal('BODY', document.body.nodeName);
-            });
+        it('document.createElement("a")', function() {
+            var a = document.createElement('a');
+            a.setAttribute('href', 'doc.html');
+
+            assert.equal('A', a.nodeName);
+            assert.equal(baseUrl + '/doc.html', a.href);
         });
     });
 

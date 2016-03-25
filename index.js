@@ -30,6 +30,7 @@ function browser(html, options, callback) {
 
 browser.load = function(url, options, callback) {
     options = options || {};
+    options.url = url;
     return (new Resource(options)).get(url).then(function(html) {
         return browser(html, options, callback);
     });
@@ -48,7 +49,6 @@ browser.sync = function(html, options) {
 
     document.defaultView = window;
     window.document = document;
-    nwmatcherFix(window);
 
     Object.defineProperty(window, 'onload', {
         get: function() {
@@ -70,7 +70,6 @@ browser.sync = function(html, options) {
             } else {
                 process.nextTick(onload);
             }
-
         }
     });
 
@@ -84,6 +83,7 @@ browser.sync = function(html, options) {
         }
     });
 
+    window._init();
     return window;
 };
 
@@ -104,19 +104,32 @@ function Window() {
     this.getComputedStyle = getComputedStyle;
 }
 
-function nwmatcherFix(window) {
-    var document = window.document;
 
-    // :target 选择器支持
-    window.location = document.location = {
-        hash: ''
-    };
+Window.prototype._init = function() {
 
-    // 避免判断为低版本浏览器
-    document.constructor.prototype.addEventListener = function() {
-        throw new Error('not yet implemented');
-    };
+    if (this.document) {
+        nwmatcherFix(this.document);
+    } else {
+         throw new Error('require `this.document`');
+    }
+
+    function nwmatcherFix(document) {
+        var window = document.defaultView;
+
+        // :target 选择器支持
+        window.location = document.location = {
+            hash: ''
+        };
+
+        // 避免判断为低版本浏览器
+        document.constructor.prototype.addEventListener = function() {
+            throw new Error('not yet implemented');
+        };
+    }
+
+    delete this._init;
 }
+
 
 
 module.exports = browser;

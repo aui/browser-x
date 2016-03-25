@@ -7,8 +7,140 @@
   <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
   <title>CSS 3 Selectors Test</title>
   <script type="text/javascript" charset="utf-8">window.location.hash = '#target';</script>
-  <style type="text/plain" id="teststyle"></style>
-  <link rel="stylesheet" href="./css3-compat.css">
+  <style>
+   /* TEST 0 : BASIC TESTS */
+    /* element type selector */
+    body { background-color: red; margin: 10px; padding: 10px; color: lime; font-family: sans-serif }
+    div { background-color: red; }
+    div.header { background-color: #e0e0e0; color: black; padding: 4px; margin-bottom: 4px;}
+    div.footer { background-color: #e0e0e0; color: black; padding: 4px; margin-top: 4px;}
+    h3, h4, p, ul { margin: 8px; padding: 0px; list-style: none; }
+    /* class selector */
+    .unitTest { width: 10px; background-color: red; margin: 0px; margin-right: 2px; float: left; }
+    .test { margin-bottom: 2px; background-color: green;}
+    /* group of selectors */
+    .unitTest, .test { height: 10px; }
+
+    /* :target selector */
+    .target :target { background-color: lime; }
+
+    /* test 1 : childhood selector */
+    html > body { background-color: green; }
+    .test > .blox1 { background-color: lime; }
+
+    /* test 2 : attribute existence selector */
+    /* attribute with a value */
+    .blox2[align] { background-color: lime; }
+    /* attribute with empty value */
+    .blox3[align] { background-color: lime; }
+    /* attribute with almost similar name */
+    .blox4, .blox5 { background-color: lime }
+
+    /* test3 : attribute value selector */
+    .blox6[align="center"] { background-color: lime; }
+    .blox6[foo="\e9"] { background-color: lime; }
+    .blox6[\_foo="\e9"] { background-color: lime; }
+
+    /* test 4 : [~=] */
+    .blox7[class~="foo"] { background-color: lime; }
+    .blox8, .blox9, .blox10 { background-color: lime; }
+
+    /* test5 [^=] */
+    .attrStart > .t3 { background-color: lime; }
+    .attrStart > .t1[class^="unit"] { background-color: lime; }
+    .attrStart > .t2 { background-color: lime; }
+    .attrStart > .t4[foo^="\e9"] { background-color: lime; }
+
+    /* test6 [$=] */
+    .attrEnd > .t3 { background-color: lime; }
+    .attrEnd > .t1[class$="t1"] { background-color: lime; }
+    .attrEnd > .t2 { background-color: lime; }
+    .attrEnd > .t4[foo$="\e9"] { background-color: lime; }
+
+    /* test7 [*=] */
+    .attrMiddle > .t3 { background-color: lime; }
+    .attrMiddle > .t1[class*="t t"] { background-color: lime; }
+    .attrMiddle > .t2 { background-color: lime; }
+    .attrMiddle > .t4[foo*="\e9"] { background-color: lime; }
+
+    /* :first-child tests */
+    .firstChild .unitTest:first-child { background-color: lime; }
+    .blox12, .blox13 { background-color: lime }
+
+    /* :nth-child(n) tests */
+    .nthchild1 > :nth-last-child(odd) { background-color: lime; }
+    .nthchild1 > :nth-child(odd) { background-color: lime; }
+
+    .nthchild2 > :nth-last-child(even) { background-color: lime; }
+    .nthchild2 > :nth-child(even) { background-color: lime; }
+
+    .nthchild3 > :nth-child(3n+2) { background-color: lime; }
+    .nthchild3 > :nth-last-child(3n+1) { background-color: lime; }
+    .nthchild3 > :nth-last-child(3n+3) { background-color: lime; }
+
+    .nthoftype1 > div:nth-of-type(odd) { background-color: lime; }
+    .nthoftype1 > div:nth-last-of-type(odd) { background-color: lime; }
+    .nthoftype1 > p { background-color: green; }
+
+    .nthoftype2 > div:nth-of-type(even) { background-color: lime; }
+    .nthoftype2 > div:nth-last-of-type(even) { background-color: lime; }
+    .nthoftype2 > p { background-color: green; }
+
+    .nthoftype3 > div:nth-of-type(3n+1) { background-color: lime; }
+    .nthoftype3 > div:nth-last-of-type(3n+1) { background-color: lime; }
+    .nthoftype3 > div:nth-last-of-type(3n+2) { background-color: lime; }
+    .nthoftype3 > p { background-color: green; }
+
+    /* :not() tests */
+    .blox14:not(span) { background-color: lime; }
+    .blox15:not([foo="blox14"]) { background-color: lime; }
+    .blox16:not(.blox15) { background-color: lime; }
+
+    /* :only-of-type tests */
+    .blox17:only-of-type { background-color: lime; }
+    .blox18:not(:only-of-type) { background-color: lime; }
+
+    /* :last-child tests */
+    .lastChild > :last-child { background-color: lime }
+    .lastChild > :not(:last-child) { background-color: lime }
+
+    /* :first-of-type tests */
+    .firstOfType > p { background-color: red }
+    .firstOfType > *:first-of-type { background-color: lime; }
+    *.firstOfType > :not(:first-of-type) { background-color: lime; }
+
+    /* :last-of-type tests */
+    .lastOfType > p { background-color: red }
+    .lastOfType > *:last-of-type { background-color: lime; }
+    *.lastOfType > :not(:last-of-type) { background-color: lime; }
+
+    /* :only-child tests */
+    .onlyChild > *:not(:only-child) { background-color: lime; }
+    .onlyChild > .unitTest > *:only-child { background-color: lime; }
+
+    /* :only-of-type tests */
+    .onlyOfType *:only-of-type { background-color: lime; }
+    .onlyOfType *:not(:only-of-type) { background-color: lime; }
+
+    /* :empty tests */
+    .empty > .isEmpty { color: red; }
+    .empty > *.isEmpty:empty { background-color: lime; color: lime; }
+    .empty > .isNotEmpty { background-color: blue; color: blue; }
+    .empty > .isNotEmpty:not(:empty) { background-color: lime; color: lime; }
+
+    /* :lang() tests */
+    .lang :lang(en) { background-color: lime; }
+    .lang :lang(fr) { background-color: lime; }
+    .lang .t1 { background-color: blue; }
+    .lang .t1:lang(es) { background-color: lime; }
+
+    /* [|=] tests */
+    .attrLang .t1 { background-color: lime; }
+    .attrLang [lang|="fr"] { background-color: lime; }
+    .attrLang .t2[lang|="en"] { background-color: lime; }
+    .attrLang .t3 { background-color: blue; }
+    .attrLang .t3[lang|="es"] { background-color: lime; }
+  </style>
 </head>
 <body title="childhood and element type selectors">
 

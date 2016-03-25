@@ -20,7 +20,7 @@ Resource.prototype = {
     constructor: Resource,
 
     /**
-     * 加载资源
+     * 加载本地或远程资源
      * @param   {String}    路径
      * @return  {Promise}
      */

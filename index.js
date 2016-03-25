@@ -1,20 +1,18 @@
 'use strict';
 
 var parse5 = require('parse5');
-var cssom = require('cssom');
-var cssstyle = require('cssstyle');
 
 var Resource = require('./src/utils/resource');
 var ParserAdapter = require('./src/adapter/parser-adapter');
 var BrowserAdapter = require('./src/adapter/browser-adapter');
 var loadCssFiles = require('./src/style/load-css-files');
-var getComputedStyle = require('./src/style/get-computed-style');
+var Window = require('./src/window');
+
 
 
 /**
- * 创建一个浏览器实例
- * @param   {String}    HTML 代码
- * @param   {Object}    选项（可选）
+ * @param   {String}    HTML
+ * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
  * @param   {Function}  回调函数（可选）
  * @param   {Promise}
  */
@@ -35,7 +33,12 @@ function browser(html, options, callback) {
 }
 
 
-
+/**
+ * @param   {String}    远程 URL
+ * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
+ * @param   {Function}  回调函数（可选）
+ * @param   {Promise}
+ */
 browser.load = function(url, options, callback) {
     options = new BrowserAdapter(options);
     options.baseUrl = url;
@@ -45,6 +48,11 @@ browser.load = function(url, options, callback) {
 };
 
 
+/**
+ * @param   {String}    HTML
+ * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
+ * @param   {Window}
+ */
 browser.sync = function(html, options) {
     options = new BrowserAdapter(options);
     options.parserAdapter = {
@@ -93,49 +101,6 @@ browser.sync = function(html, options) {
     window._init();
     return window;
 };
-
-
-function Window() {
-    this.document = null;
-    this.onload = null;
-    this.onerror = null;
-
-    this.StyleSheet = cssom.StyleSheet;
-    this.MediaList = cssom.MediaList;
-    this.CSSStyleSheet = cssom.CSSStyleSheet;
-    this.CSSRule = cssom.CSSRule;
-    this.CSSStyleRule = cssom.CSSStyleRule;
-    this.CSSMediaRule = cssom.CSSMediaRule;
-    this.CSSImportRule = cssom.CSSImportRule;
-    this.CSSStyleDeclaration = cssstyle.CSSStyleDeclaration;
-    this.getComputedStyle = getComputedStyle;
-}
-
-
-Window.prototype._init = function() {
-
-    if (this.document) {
-        nwmatcherFix(this.document);
-    } else {
-         throw new Error('require `this.document`');
-    }
-
-    function nwmatcherFix(document) {
-        var window = document.defaultView;
-
-        // :target 选择器支持
-        window.location = document.location = {
-            hash: ''
-        };
-
-        // 避免判断为低版本浏览器
-        document.constructor.prototype.addEventListener = function() {
-            throw new Error('not yet implemented');
-        };
-    }
-
-    delete this._init;
-}
 
 
 

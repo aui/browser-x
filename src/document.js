@@ -18,7 +18,7 @@ function Document(options) {
     this._documentElement = null;
     this._styleSheets = null;
     this._parserAdapter = options.parserAdapter;
-    this._URL = options.url || '';
+    this._baseURI = options.baseURI || '';
 }
 
 Document.prototype = Object.create(Node.prototype, {
@@ -28,7 +28,7 @@ Document.prototype = Object.create(Node.prototype, {
             if (base) {
                 return base.getAttribute('href');
             } else {
-                return this._URL;
+                return this._baseURI;
             }
         }
     },

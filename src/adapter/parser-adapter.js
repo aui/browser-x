@@ -5,6 +5,11 @@ var Comment = require('../comment');
 var Node = require('../node');
 
 function ParserAdapter(options) {
+
+    if (options instanceof ParserAdapter) {
+        return options;
+    }
+
     this.document = null;
     this.options = options;
 }

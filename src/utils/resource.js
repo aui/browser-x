@@ -5,170 +5,225 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 var url = require('url');
+var path = require('path');
 var zlib = require('zlib');
-var utils = require('./utils');
 var VError = require('verror');
 
 
 
-function Resource(options) {
-    options = utils.options(Resource.defaults, options);
-    this.options = options;
-    this.cache = {};
+function Resource(adapter) {
+    this.adapter = adapter || Resource.defaults;
 }
 
+Resource.prototype = {
 
-Resource.prototype.get = function(file) {
+    constructor: Resource,
 
-    file = utils.normalize(file);
+    /**
+     * 加载资源
+     * @param   {String}    路径
+     * @return  {Promise}
+     */
+    get: function(file) {
 
-    var resource;
-    var options = this.options;
-    var resourceCache = options.resourceCache;
-    var that = this;
+        file = this.normalize(file);
 
-    options.resourceBeforeLoad(file);
+        var resource;
+        var adapter = this.adapter;
+        var resourceCache = adapter.resourceCache();
+        var that = this;
 
-    if (resourceCache) {
-        resource = this.cache[file];
-        if (resource) {
-            return resource;
-        }
-    }
-
-    resource = new Promise(function(resolve, reject) {
-
-        if (utils.isRemoteFile(file)) {
-            that.loadRemoteFile(file, onload);
-        } else {
-            that.loadLocalFile(file, onload);
+        if (adapter.resourceIgnore(file)) {
+            Promise.resolve('');
         }
 
-        function onload(errors, data) {
-            if (errors) {
-                reject(errors);
+        adapter.resourceBeforeLoad(file);
+
+        if (resourceCache[file]) {
+            resource = resourceCache[file];
+            if (resource) {
+                return resource;
+            }
+        }
+
+        resource = new Promise(function(resolve, reject) {
+
+            if (that.isRemoteFile(file)) {
+                that.loadRemoteFile(file, onload);
             } else {
-                resolve(data);
-            }
-        }
-
-    });
-
-
-    resource.catch(function(errors) {
-        errors = new VError(errors, 'ENOENT, load "%s" failed', file);
-        return Promise.reject(errors);
-    });
-
-
-    if (resourceCache) {
-        this.cache[file] = resource;
-    }
-
-    return resource;
-};
-
-
-
-Resource.prototype.loadLocalFile = function(file, callback) {
-    fs.readFile(file, 'utf8', callback);
-};
-
-
-Resource.prototype.loadRemoteFile = function(file, callback) {
-
-    file = this.options.resourceMap(file);
-
-    var location = url.parse(file);
-    var protocol = location.protocol === 'http:' ? http : https;
-
-    var request = protocol.request({
-            method: 'GET',
-            host: location.host,
-            hostname: location.hostname,
-            path: location.path,
-            port: location.port,
-            headers: {
-                'accept-encoding': 'gzip,deflate'
-            }
-        }, function(res) {
-
-            var encoding = res.headers['content-encoding'];
-            var type = res.headers['content-type'];
-            var errors = null;
-
-
-            if (!/2\d\d/.test(res.statusCode)) {
-                errors = new Error(res.statusMessage);
-            } else if (type.indexOf('text/') !== 0) {
-                errors = new Error('only supports `text/*` resources');
+                that.loadLocalFile(file, onload);
             }
 
+            function onload(errors, data) {
+                if (errors) {
+                    reject(errors);
+                } else {
+                    resolve(data);
+                }
+            }
 
-            if (errors) {
-                callback(errors);
-            } else {
-
-                var buffer = new Buffer([]);
+        });
 
 
-                if (encoding === 'undefined') {
-                    res.setEncoding('utf-8');
+        resource.catch(function(errors) {
+            errors = new VError(errors, 'ENOENT, load "%s" failed', file);
+            return Promise.reject(errors);
+        });
+
+
+        resourceCache[file] = resource;
+        return resource;
+    },
+
+    /**
+     * 加载本地资源
+     * @param   {String}    路径
+     * @param  {String}    回调
+     */
+    loadLocalFile: function(file, callback) {
+        fs.readFile(file, 'utf8', callback);
+    },
+
+
+    /**
+     * 加载远程资源
+     * @param   {String}    路径
+     * @param  {String}    回调
+     */
+    loadRemoteFile: function(file, callback) {
+
+        file = this.adapter.resourceMap(file);
+
+        var location = url.parse(file);
+        var protocol = location.protocol === 'http:' ? http : https;
+
+        var request = protocol.request({
+                method: 'GET',
+                host: location.host,
+                hostname: location.hostname,
+                path: location.path,
+                port: location.port,
+                headers: {
+                    'accept-encoding': 'gzip,deflate'
+                }
+            }, function(res) {
+
+                var encoding = res.headers['content-encoding'];
+                var type = res.headers['content-type'];
+                var errors = null;
+
+
+                if (!/2\d\d/.test(res.statusCode)) {
+                    errors = new Error(res.statusMessage);
+                } else if (type.indexOf('text/') !== 0) {
+                    errors = new Error('only supports `text/*` resources');
                 }
 
 
-                res.on('data', function(chunk) {
-                    buffer = Buffer.concat([buffer, chunk]);
-                });
+                if (errors) {
+                    callback(errors);
+                } else {
 
-                res.on('end', function() {
+                    var buffer = new Buffer([]);
 
-                    if (encoding === 'gzip') {
 
-                        zlib.unzip(buffer, function(errors, buffer) {
-                            if (errors) {
-                                callback(errors);
-                            } else {
-                                callback(null, buffer.toString());
-                            }
-                        });
-
-                    } else if (encoding == 'deflate') {
-
-                        zlib.inflate(buffer, function(errors, decoded) {
-                            if (errors) {
-                                callback(errors);
-                            } else {
-                                callback(null, decoded.toString());
-                            }
-                        });
-
-                    } else {
-                        callback(null, buffer.toString());
+                    if (encoding === 'undefined') {
+                        res.setEncoding('utf-8');
                     }
 
-                });
 
-            }
+                    res.on('data', function(chunk) {
+                        buffer = Buffer.concat([buffer, chunk]);
+                    });
 
-        })
-        .on('error', callback);
+                    res.on('end', function() {
 
-    request.end();
+                        if (encoding === 'gzip') {
 
+                            zlib.unzip(buffer, function(errors, buffer) {
+                                if (errors) {
+                                    callback(errors);
+                                } else {
+                                    callback(null, buffer.toString());
+                                }
+                            });
+
+                        } else if (encoding == 'deflate') {
+
+                            zlib.inflate(buffer, function(errors, decoded) {
+                                if (errors) {
+                                    callback(errors);
+                                } else {
+                                    callback(null, decoded.toString());
+                                }
+                            });
+
+                        } else {
+                            callback(null, buffer.toString());
+                        }
+
+                    });
+
+                }
+
+            })
+            .on('error', callback);
+
+        request.end();
+
+    },
+
+    /**
+     * 标准化路径
+     * @param   {String}    路径
+     * @return  {String}    标准化路径
+     */
+    normalize: function(src) {
+
+        if (!src) {
+            return src;
+        }
+
+        if (this.isRemoteFile(src)) {
+            // http://font/font?name=xxx#x
+            // http://font/font?
+            return src.replace(/#.*$/, '').replace(/\?$/, '');
+        } else {
+            // ../font/font.eot?#font-spider
+            src = src.replace(/[#?].*$/g, '');
+            return path.normalize(src);
+        }
+    },
+
+
+    /**
+     * 判断是否为远程 URL
+     * @param   {String}     路径
+     * @return  {Boolean}
+     */
+    isRemoteFile: function(src) {
+        var RE_SERVER = /^https?\:\/\//i;
+        return RE_SERVER.test(src);
+    }
 };
 
-/*
- * 默认选项
- */
+
 Resource.defaults = {
-    resourceCache: false,
-    resourceMap: function(url) {
-        return url;
+    resourceCache: function() {
+        if (!this._resourceCache) {
+            this._resourceCache = {};
+        }
+
+        return this._resourceCache;
+    },
+    resourceIgnore: function(file) {
+        return !file;
+    },
+    resourceMap: function(file) {
+        return file;
     },
     resourceBeforeLoad: function() {}
 };
-
 
 
 module.exports = Resource;

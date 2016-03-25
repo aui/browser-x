@@ -2,6 +2,7 @@
 var fs = require('fs');
 var browser = require('../../../');
 var Assert = require('assert');
+var NW = require('nwmatcher/src/nwmatcher-noqsa');
 
 describe('W3C-Selector-tests', function() {
 
@@ -11,17 +12,15 @@ describe('W3C-Selector-tests', function() {
     var html = fs.readFileSync(__dirname + '/W3C-Selector-tests.html', 'utf8');
 
     var window = browser.sync(html, {
-        url: __dirname + '/W3C-Selector-tests.html',
+        baseURI: __dirname + '/W3C-Selector-tests.html',
         loadCssFile: true
     });
     var document = window.document;
     /******************************************/
 
-
-
-    var $ = function(s, c) {
-        return document.querySelectorAll(s, c);
-    };
+    var $ = NW({
+        document: document
+    }).select;
 
     if (window.location.hash.indexOf("target") == -1)
         window.location.hash = "#target";
@@ -56,7 +55,7 @@ describe('W3C-Selector-tests', function() {
     runTest(ecss, "Syntax Error: Element", root, false);
     jqTests("Element", root3, "querySelectorAll");
 
-    // 不支持
+    // 暂时不支持 cloneNode
     // var root4 = root2.cloneNode(true);
     // interfaceCheck(root4, "Disconnected Element");
     // runTest(css, "Disconnected Element", root4, true);
@@ -176,7 +175,7 @@ describe('W3C-Selector-tests', function() {
         pass = false;
         try {
             if ($)
-                $();
+            pass = $();
         } catch (e) {
             pass = true;
         }

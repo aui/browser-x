@@ -9,7 +9,7 @@ describe('css3-compat', function() {
 
         var html = fs.readFileSync(__dirname + '/css3-compat.html', 'utf8');
         var window = browser.sync(html, {
-            url: __dirname + '/css3-compat.html',
+            baseURI: __dirname + '/css3-compat.html',
             loadCssFile: false
         });
 

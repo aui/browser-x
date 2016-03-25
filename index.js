@@ -6,10 +6,18 @@ var cssstyle = require('cssstyle');
 
 var Resource = require('./src/utils/resource');
 var ParserAdapter = require('./src/adapter/parser-adapter');
+var BrowserAdapter = require('./src/adapter/browser-adapter');
 var loadCssFiles = require('./src/style/load-css-files');
 var getComputedStyle = require('./src/style/get-computed-style');
 
 
+/**
+ * 创建一个浏览器实例
+ * @param   {String}    HTML 代码
+ * @param   {Object}    选项（可选）
+ * @param   {Function}  回调函数（可选）
+ * @param   {Promise}
+ */
 function browser(html, options, callback) {
     callback = callback || function() {};
 
@@ -29,8 +37,8 @@ function browser(html, options, callback) {
 
 
 browser.load = function(url, options, callback) {
-    options = options || {};
-    options.url = url;
+    options = new BrowserAdapter(options);
+    options.baseUrl = url;
     return (new Resource(options)).get(url).then(function(html) {
         return browser(html, options, callback);
     });
@@ -38,8 +46,7 @@ browser.load = function(url, options, callback) {
 
 
 browser.sync = function(html, options) {
-    options = options || {};
-
+    options = new BrowserAdapter(options);
     options.parserAdapter = {
         treeAdapter: new ParserAdapter(options)
     };

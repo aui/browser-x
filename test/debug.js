@@ -5,7 +5,7 @@ var eachCssStyleRule = require('../src/style/each-css-style-rule');
 
 
 var document = dedom(html, {
-    url: __dirname + '/hello.html',
+    baseURI: __dirname + '/hello.html',
     loadCssFile: true
 }).then(function(window) {
 

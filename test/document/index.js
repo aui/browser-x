@@ -5,7 +5,7 @@ var assert = require('assert');
 
 describe('Document', function() {
 
-    var baseUrl = 'http://font-spider.org';
+    var baseURI = 'http://font-spider.org';
     var html = '<!DOCTYPE html>' +
         '<html lang="en">' +
         '<head>' +
@@ -16,7 +16,7 @@ describe('Document', function() {
         '</html>';
 
     var window = browser.sync(html, {
-        url: baseUrl + '/index.html',
+        baseURI: baseURI + '/index.html',
         loadCssFile: false
     });
     var document = window.document;
@@ -55,7 +55,7 @@ describe('Document', function() {
             a.setAttribute('href', 'doc.html');
 
             assert.equal('A', a.nodeName);
-            assert.equal(baseUrl + '/doc.html', a.href);
+            assert.equal(baseURI + '/doc.html', a.href);
         });
     });
 

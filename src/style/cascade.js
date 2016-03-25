@@ -4,8 +4,11 @@ var specificity = require('specificity');
 var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
 var eachCssStyleRule = require('./each-css-style-rule');
 
+
 /**
- * 获取优先级
+ * 获取优先级信息
+ * @param   {String}    选择器文本
+ * @return  {Array}
  */
 function getSpecificity(selectorText) {
     return specificity
@@ -20,6 +23,8 @@ function getSpecificity(selectorText) {
 
 /**
  * 优先级比较算法
+ * @see     getSpecificity
+ * @return  {Number}
  */
 function compareSpecificity(first, second) {
     for (var i = 0; i < first.length; i++) {
@@ -39,22 +44,30 @@ function compareSpecificity(first, second) {
 
 /**
  * 获取标准化伪元素名称
+ * @param   {String}    伪名称
+ * @return  {String}    格式化后的名称
  */
 function normalizePseudo(value) {
     return value ? value.toLowerCase().replace(/\:+(\w+)$/, '$1') : '';
 }
 
 
-function cascade(node, pseudo) {
+/**
+ * 获取元素最终应用样式
+ * @param   {HTMLElement}   元素
+ * @param   {String}
+ * @return  {CSSStyleDeclaration}
+ */
+function cascade(element, pseudo) {
     pseudo = normalizePseudo(pseudo);
 
     var cacheKey = '_cascade::' + pseudo;
 
-    if (node[cacheKey]) {
-        return node[cacheKey];
+    if (element[cacheKey]) {
+        return element[cacheKey];
     }
 
-    var document = node.ownerDocument;
+    var document = element.ownerDocument;
     var cssStyleDeclarations = [];
     var style = new CSSStyleDeclaration();
     var importants = {};
@@ -62,16 +75,16 @@ function cascade(node, pseudo) {
     var pseudoRe = pseudo ? new RegExp('\\:+' + pseudo + '$', 'i') : null;
 
     // 行内样式
-    cssStyleDeclarations.push(node.style);
-    if (!node.style._specificity) {
-        node.style._specificity = [1, 0, 0, 0];
+    cssStyleDeclarations.push(element.style);
+    if (!element.style._specificity) {
+        element.style._specificity = [1, 0, 0, 0];
     }
 
     // 非行内样式
     // StyleSheetList > CSSStyleSheet.cssRules > CSSStyleRule
     eachCssStyleRule(document, function(rule) {
         var selectorText = rule.selectorText;
-        if (matches(node, selectorText)) {
+        if (matches(element, selectorText)) {
             rule.style._specificity = getSpecificity(selectorText);
             cssStyleDeclarations.push(rule.style);
         }
@@ -86,7 +99,7 @@ function cascade(node, pseudo) {
     });
 
 
-    function matches(node, selector) {
+    function matches(element, selector) {
         if (pseudoRe) {
             // *::after
             // ::after
@@ -94,7 +107,7 @@ function cascade(node, pseudo) {
             selector = selector.replace(pseudoRe, '') || '*';
         }
         try {
-            return node.matches(selector);
+            return element.matches(selector);
         } catch (e) {}
     }
 
@@ -113,7 +126,7 @@ function cascade(node, pseudo) {
     }
 
 
-    node[cacheKey] = style;
+    element[cacheKey] = style;
 
     return style;
 }

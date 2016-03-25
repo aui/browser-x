@@ -5,46 +5,93 @@ var cssom = require('cssom');
 var cssstyle = require('cssstyle');
 
 var Resource = require('./src/utils/resource');
-var ParserAdapter = require('./src/utils/parser-adapter');
+var ParserAdapter = require('./src/adapter/parser-adapter');
 var loadCssFiles = require('./src/style/load-css-files');
 var getComputedStyle = require('./src/style/get-computed-style');
 
-module.exports = function browser(html, options, callback) {
-    options = options || {};
+
+function browser(html, options, callback) {
     callback = callback || function() {};
 
-    options.parserAdapter = options.parserAdapter || {
-        treeAdapter: new ParserAdapter(options)
-    };
-
     return new Promise(function(resolve, reject) {
-        var window = new Window();
-        var document =  parse5.parse(html, options.parserAdapter);
-
-        document.defaultView = window;
-        window.document = document;
-
-        nwmatcherFix(window);
-
-        if (options.loadCssFile) {
-            loadCssFiles(document, new Resource(options)).then(function() {
-                resolve(window);
-                callback(null, window);
-            }, function(errors) {
-                reject(errors);
-                callback(errors);
-            });
-        } else {
+        var window = browser.sync(html, options);
+        window.onload = function() {
             resolve(window);
             callback(null, window);
-        }
+        };
+        window.onerror = function(errors) {
+            reject(errors);
+            callback(errors);
+        };
+    });
+}
+
+
+
+browser.load = function(url, options, callback) {
+    options = options || {};
+    return (new Resource(options)).get(url).then(function(html) {
+        return browser(html, options, callback);
     });
 };
 
 
+browser.sync = function(html, options) {
+    options = options || {};
+
+    options.parserAdapter = {
+        treeAdapter: new ParserAdapter(options)
+    };
+
+    var window = new Window();
+    var document = parse5.parse(html, options.parserAdapter);
+
+    document.defaultView = window;
+    window.document = document;
+    nwmatcherFix(window);
+
+    Object.defineProperty(window, 'onload', {
+        get: function() {
+            return this._onload;
+        },
+        set: function(onload) {
+            this._onload = onload;
+
+            if (options.loadCssFile) {
+                loadCssFiles(document, new Resource(options)).then(function() {
+                    process.nextTick(onload);
+                }, function(errors) {
+                    process.nextTick(function() {
+                        if (typeof window.onerror === 'function') {
+                            window.onerror(errors);
+                        }
+                    });
+                });
+            } else {
+                process.nextTick(onload);
+            }
+
+        }
+    });
+
+
+    Object.defineProperty(window, 'onerror', {
+        get: function() {
+            return this._onerror;
+        },
+        set: function(onerror) {
+            this._onerror = onerror;
+        }
+    });
+
+    return window;
+};
+
 
 function Window() {
     this.document = null;
+    this.onload = null;
+    this.onerror = null;
 
     this.StyleSheet = cssom.StyleSheet;
     this.MediaList = cssom.MediaList;
@@ -70,3 +117,6 @@ function nwmatcherFix(window) {
         throw new Error('not yet implemented');
     };
 }
+
+
+module.exports = browser;

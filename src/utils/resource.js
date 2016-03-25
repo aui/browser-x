@@ -18,10 +18,9 @@ function Resource(options) {
 }
 
 
-Resource.prototype.get = function(file, callback) {
+Resource.prototype.get = function(file) {
 
     file = utils.normalize(file);
-    callback = callback || function() {};
 
     var resource;
     var options = this.options;
@@ -48,10 +47,8 @@ Resource.prototype.get = function(file, callback) {
         function onload(errors, data) {
             if (errors) {
                 reject(errors);
-                callback(errors);
             } else {
                 resolve(data);
-                callback(null, data);
             }
         }
 

@@ -61,7 +61,7 @@ ParserAdapter.prototype = {
     },
 
     isQuirksMode: function(document) { // jshint ignore:line
-        console.warn('parse5: isQuirksMode');
+        return false;
     },
 
     detachNode: function(node) { // jshint ignore:line

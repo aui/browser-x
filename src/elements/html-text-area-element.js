@@ -39,6 +39,11 @@ HTMLTextAreaElement.prototype = Object.create(Element.prototype, {
             return this.textContent;
         }
     },
+    defaultValue: {
+        get: function() {
+            return this.value;
+        }
+    },
     disabled: {
         get: function() {
             return this.hasAttribute('disabled');

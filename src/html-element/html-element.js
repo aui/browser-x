@@ -1,18 +1,17 @@
 'use strict';
-
 var url = require('url');
-var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
+
 var Element = require('../element');
+var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 
-
-function HTMLAnchorElement(document, name, namespaceURI) {
+function HTMLElement(document, name, namespaceURI) {
     Element.call(this, document, name, namespaceURI);
 }
 
-HTMLAnchorElement.prototype = Object.create(Element.prototype, {
+HTMLElement.prototype = Object.create(Element.prototype, {
     lang: {
         get: function() {
-            return this.getAttribute('lang');
+            return this.getAttribute('lang') || '';
         }
     },
     style: {
@@ -30,16 +29,11 @@ HTMLAnchorElement.prototype = Object.create(Element.prototype, {
                 return this._style;
             }
         }
-    },
-    href: {
-        get: function() {
-            var href = this.getAttribute('href');
-            // TODO file://
-            return url.resolve(this.ownerDocument.baseURI, href);
-        }
     }
 });
 
 
-HTMLAnchorElement.prototype.constructor = HTMLAnchorElement;
-module.exports = HTMLAnchorElement;
+HTMLElement.prototype.constructor = HTMLElement;
+
+
+module.exports = HTMLElement;

@@ -1,7 +1,7 @@
 'use strict';
 
 var url = require('url');
-var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
+var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 var Element = require('../element');
 
 
@@ -12,7 +12,7 @@ function HTMLLinkElement(document, name, namespaceURI) {
 HTMLLinkElement.prototype = Object.create(Element.prototype, {
     lang: {
         get: function() {
-            return this.getAttribute('lang');
+            return this.getAttribute('lang') || '';
         }
     },
     style: {

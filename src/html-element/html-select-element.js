@@ -1,6 +1,6 @@
 'use strict';
 
-var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
+var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 var Element = require('../element');
 
 function HTMLSelectElement(document, name, namespaceURI) {
@@ -10,7 +10,7 @@ function HTMLSelectElement(document, name, namespaceURI) {
 HTMLSelectElement.prototype = Object.create(Element.prototype, {
     lang: {
         get: function() {
-            return this.getAttribute('lang');
+            return this.getAttribute('lang') || '';
         }
     },
     style: {

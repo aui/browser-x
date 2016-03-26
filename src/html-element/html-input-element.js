@@ -1,16 +1,16 @@
 'use strict';
 
-var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
+var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 var Element = require('../element');
 
-function HTMLButtonElement(document, name, namespaceURI) {
+function HTMLInputElement(document, name, namespaceURI) {
     Element.call(this, document, name, namespaceURI);
 }
 
-HTMLButtonElement.prototype = Object.create(Element.prototype, {
+HTMLInputElement.prototype = Object.create(Element.prototype, {
     lang: {
         get: function() {
-            return this.getAttribute('lang');
+            return this.getAttribute('lang') || '';
         }
     },
     style: {
@@ -32,12 +32,27 @@ HTMLButtonElement.prototype = Object.create(Element.prototype, {
     type: {
         get: function() {
             var type = this.getAttribute('type');
-            return type || 'submit';
+            return type || 'text';
         }
     },
     value: {
         get: function() {
             return this.getAttribute('value') || '';
+        }
+    },
+    defaultValue: {
+        get: function() {
+            return this.value;
+        }
+    },
+    checked: {
+        get: function() {
+            return this.hasAttribute('checked');
+        }
+    },
+    defaultChecked: {
+        get: function() {
+            return this.checked;
         }
     },
     disabled: {
@@ -60,6 +75,6 @@ HTMLButtonElement.prototype = Object.create(Element.prototype, {
     }
 });
 
-HTMLButtonElement.prototype.constructor = HTMLButtonElement;
+HTMLInputElement.prototype.constructor = HTMLInputElement;
 
-module.exports = HTMLButtonElement;
+module.exports = HTMLInputElement;

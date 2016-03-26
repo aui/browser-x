@@ -10,17 +10,7 @@ var HTMLElement = require('./html-element');
 var Node = require('./node');
 var Text = require('./text');
 var StyleSheetList = require('./style-sheet-list');
-
-
-var HTMLAnchorElement = require('./elements').HTMLAnchorElement;
-var HTMLImageElement = require('./elements').HTMLImageElement;
-var HTMLLinkElement = require('./elements').HTMLLinkElement;
-var HTMLFormElement = require('./elements').HTMLFormElement;
-var HTMLButtonElement = require('./elements').HTMLButtonElement;
-var HTMLInputElement = require('./elements').HTMLInputElement;
-var HTMLSelectElement = require('./elements').HTMLSelectElement;
-var HTMLOptionElement = require('./elements').HTMLOptionElement;
-var HTMLTextAreaElement = require('./elements').HTMLTextAreaElement;
+var elementConfig = require('./html-element/config');
 
 
 
@@ -121,41 +111,11 @@ Document.prototype.createElement = function(tagName) {
 
 Document.prototype.createElementNS = function(namespaceURI, tagName) {
     tagName = tagName.toUpperCase();
-    var Constructor;
-
-    switch (tagName) {
-        case 'A':
-            Constructor = HTMLAnchorElement;
-            break;
-        case 'IMG':
-            Constructor = HTMLImageElement;
-            break;
-        case 'LINK':
-            Constructor = HTMLLinkElement;
-            break;
-        case 'FORM':
-            Constructor = HTMLFormElement;
-            break;
-        case 'BUTTON':
-            Constructor = HTMLButtonElement;
-            break;
-        case 'INPUT':
-            Constructor = HTMLInputElement;
-            break;
-        case 'SELECT':
-            Constructor = HTMLSelectElement;
-            break;
-        case 'OPTION':
-            Constructor = HTMLOptionElement;
-            break;
-        case 'TEXTAREA':
-            Constructor = HTMLTextAreaElement;
-            break;
-        default:
-            Constructor = HTMLElement;
+    if (elementConfig[tagName]) {
+        return new elementConfig[tagName](this, tagName, namespaceURI);
+    } else {
+        return new HTMLElement(this, tagName, namespaceURI);
     }
-
-    return new Constructor(this, tagName, namespaceURI);
 };
 
 Document.prototype.createDocumentFragment = function() {

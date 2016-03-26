@@ -1,8 +1,6 @@
 'use strict';
 
-var cssom = require('cssom');
-
-
+var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
 var DocumentType = require('./document-type');

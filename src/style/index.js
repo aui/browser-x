@@ -13,4 +13,6 @@ var CSSOM = {
     CSSStyleDeclaration : cssstyle.CSSStyleDeclaration
 };
 
+CSSOM.parse = cssom.parse;
+
 module.exports = CSSOM;

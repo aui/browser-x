@@ -1,4 +1,5 @@
 'use strict';
+
 var Node = require('./node');
 
 function Attr(ownerDocument, name, specified, value) {

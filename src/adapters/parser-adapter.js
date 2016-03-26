@@ -85,13 +85,6 @@ ParserAdapter.prototype = {
     },
 
     getChildNodes: function(node) {
-        /*var array = [];
-        var child = node.firstChild;
-        while (child) {
-            array.push(child);
-            child = child.nextSibling;
-        }
-        return array;*/
         return node.childNodes;
     },
 
@@ -100,15 +93,7 @@ ParserAdapter.prototype = {
     },
 
     getAttrList: function(node) {
-        var i = -1;
-        var n = node.attributes.length;// TODO 优化 node.attributes 为类数组
-        var a;
-        var array = new Array(n);
-        while (++i < n) array[i] = {
-            name: (a = node.attributes.item(i)).nodeName,
-            value: a.nodeValue
-        };
-        return array;
+        return node.attributes
     },
 
     getTagName: function(node) {

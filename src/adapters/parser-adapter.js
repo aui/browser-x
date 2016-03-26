@@ -40,7 +40,9 @@ ParserAdapter.prototype = {
     },
 
     appendChild: function(parentNode, newChild) {
-        if (!parentNode) parentNode = this.document;
+        if (!parentNode) {
+            parentNode = this.document;
+        }
         parentNode.appendChild(newChild);
     },
 
@@ -83,13 +85,14 @@ ParserAdapter.prototype = {
     },
 
     getChildNodes: function(node) {
-        var array = [];
+        /*var array = [];
         var child = node.firstChild;
         while (child) {
             array.push(child);
             child = child.nextSibling;
         }
-        return array;
+        return array;*/
+        return node.childNodes;
     },
 
     getParentNode: function(node) {
@@ -98,7 +101,7 @@ ParserAdapter.prototype = {
 
     getAttrList: function(node) {
         var i = -1;
-        var n = node.attributes.length;
+        var n = node.attributes.length;// TODO 优化 node.attributes 为类数组
         var a;
         var array = new Array(n);
         while (++i < n) array[i] = {

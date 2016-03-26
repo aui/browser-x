@@ -37,37 +37,6 @@ HTMLAnchorElement.prototype = Object.create(Element.prototype, {
             // TODO file://
             return url.resolve(this.ownerDocument.baseURI, href);
         }
-    },
-    hostname: {
-        get: function() {
-            return url.parse(this.href).hostname || '';
-        }
-    },
-    host: {
-        get: function() {
-            return url.parse(this.href).host || '';
-        }
-    },
-    port: {
-        get: function() {
-            return url.parse(this.href).port || '';
-        }
-    },
-    protocol: {
-        get: function() {
-            var protocol = url.parse(this.href).protocol;
-            return (protocol === null) ? ':' : protocol;
-        }
-    },
-    pathname: {
-        get: function() {
-            return url.parse(this.href).pathname || '';
-        }
-    },
-    hash: {
-        get: function() {
-            return url.parse(this.href).hash || '';
-        }
     }
 });
 

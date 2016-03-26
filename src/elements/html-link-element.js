@@ -9,7 +9,7 @@ function HTMLLinkElement(document, name, namespaceURI) {
     Element.call(this, document, name, namespaceURI);
 }
 
-HTMLLinkElement.prototype = Object.create(HTMLLinkElement.prototype, {
+HTMLLinkElement.prototype = Object.create(Element.prototype, {
     lang: {
         get: function() {
             return this.getAttribute('lang');
@@ -41,21 +41,6 @@ HTMLLinkElement.prototype = Object.create(HTMLLinkElement.prototype, {
     disabled: {
         get: function() {
             return this.hasAttribute('disabled');
-        }
-    },
-    media: {
-        get: function() {
-            return this.getAttribute('media');
-        }
-    },
-    charset: {
-        get: function() {
-            return this.getAttribute('charset');
-        }
-    },
-    rel: {
-        get: function() {
-            return this.getAttribute('rel');
         }
     }
 });

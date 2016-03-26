@@ -20,17 +20,12 @@ function Element(ownerDocument, name, namespaceURI) {
 Element.prototype = Object.create(Node.prototype, {
     id: {
         get: function() {
-            return this.getAttribute('id');
-        }
-    },
-    name: {
-        get: function() {
-            return this.getAttribute('name');
+            return this.getAttribute('id') || '';
         }
     },
     className: {
         get: function() {
-            return this.getAttribute('class');
+            return this.getAttribute('class') || '';
         }
     },
     tagName: {
@@ -54,8 +49,13 @@ Element.prototype = Object.create(Node.prototype, {
         get: function() {
             // @see parse5: SerializerOptions.getChildNodes
             return parse5.serialize({
-                firstChild: this
+                childNodes: new NodeList([this])
             }, this.ownerDocument._parserAdapter);
+        }
+    },
+    baseURI: {
+        get: function() {
+            return this.ownerDocument.baseURI;
         }
     }
 });

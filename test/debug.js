@@ -10,7 +10,9 @@ var window = browser.sync(html, {
 });
 var document = window.document;
 
+
 console.log(document.title);
+console.log('outerHTML', document.querySelector('a').outerHTML);
 console.log(document.querySelector('a').href);
 console.log(document.querySelector('a').style.color);
 //console.log(document.querySelectorAll('a[style]'))

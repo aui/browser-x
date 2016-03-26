@@ -62,6 +62,10 @@ Element.prototype = Object.create(Node.prototype, {
 
 Element.prototype.constructor = Element;
 
+Element.prototype.hasAttribute = function(name) {
+    return this.attributes.getNamedItem(name) !== null;
+};
+
 Element.prototype.getAttribute = function(name) {
     var attr = this.attributes.getNamedItem(name);
     return attr && attr.nodeValue;

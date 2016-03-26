@@ -3,8 +3,8 @@
 var parse5 = require('parse5');
 
 var Resource = require('./src/utils/resource');
-var ParserAdapter = require('./src/adapter/parser-adapter');
-var BrowserAdapter = require('./src/adapter/browser-adapter');
+var ParserAdapter = require('./src/adapters/parser-adapter');
+var BrowserAdapter = require('./src/adapters/browser-adapter');
 var loadCssFiles = require('./src/style/load-css-files');
 var Window = require('./src/window');
 
@@ -12,7 +12,7 @@ var Window = require('./src/window');
 
 /**
  * @param   {String}    HTML
- * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
+ * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
  * @param   {Function}  回调函数（可选）
  * @param   {Promise}
  */
@@ -35,7 +35,7 @@ function browser(html, options, callback) {
 
 /**
  * @param   {String}    页面地址（本地或远程）
- * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
+ * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
  * @param   {Function}  回调函数（可选）
  * @param   {Promise}
  */
@@ -50,7 +50,7 @@ browser.open = function(url, options, callback) {
 
 /**
  * @param   {String}    HTML
- * @param   {Object}    选项（可选）@see ./src/adapter/browser-adapter
+ * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
  * @param   {Window}
  */
 browser.sync = function(html, options) {

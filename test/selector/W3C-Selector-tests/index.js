@@ -29,8 +29,8 @@ describe('W3C-Selector-tests', function() {
     var root2 = document.getElementById("root2");
     var root3 = document.getElementById("root3");
     var results = [];
-    var tests = 0,
-        passed = 0;
+    //var tests = 0,
+    //    passed = 0;
     var cache = {};
 
     var cssElem = document.getElementById("test");
@@ -47,15 +47,15 @@ describe('W3C-Selector-tests', function() {
             .replace(/^\s*|\s*$/g, "").split(/\s*{/);
     }
 
-    interfaceCheck(root, "Element");
-    runTest(css, "Element", root, true);
-    check("Inside Element", root, true, false);
-    cacheCheck("Element", root);
-    check("Outside Element", root2, passed === 0 ? "autofail" : false, false);
-    runTest(ecss, "Syntax Error: Element", root, false);
-    jqTests("Element", root3, "querySelectorAll");
+    // interfaceCheck(root, "Element");
+    // runTest(css, "Element", root, true);
+    // check("Inside Element", root, true, false);
+    // cacheCheck("Element", root);
+    // check("Outside Element", root2, passed === 0 ? "autofail" : false, false);
+    // runTest(ecss, "Syntax Error: Element", root, false);
+    // jqTests("Element", root3, "querySelectorAll");
 
-    // 暂时不支持 cloneNode
+    // 已经删除了 cloneNode 方法
     // var root4 = root2.cloneNode(true);
     // interfaceCheck(root4, "Disconnected Element");
     // runTest(css, "Disconnected Element", root4, true);

@@ -12,7 +12,7 @@
     "verror": "^1.6.1"
   },
   "scripts": {
-    "debug": "inspector test/debug.js",
+    "debug": "node-inspector test/debug.js",
     "test": "mocha ./test/index"
   },
   "keywords": [

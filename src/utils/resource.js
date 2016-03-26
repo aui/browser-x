@@ -9,10 +9,12 @@ var path = require('path');
 var zlib = require('zlib');
 var VError = require('verror');
 
+var BrowserAdapter = require('../adapters/browser-adapter');
+
 
 
 function Resource(adapter) {
-    this.adapter = adapter || Resource.defaults;
+    this.adapter = adapter || new BrowserAdapter();
 }
 
 Resource.prototype = {
@@ -94,9 +96,6 @@ Resource.prototype = {
      * @param  {String}    回调
      */
     loadRemoteFile: function(file, callback) {
-
-        file = this.adapter.resourceMap(file);
-
         var location = url.parse(file);
         var protocol = location.protocol === 'http:' ? http : https;
 
@@ -106,9 +105,7 @@ Resource.prototype = {
                 hostname: location.hostname,
                 path: location.path,
                 port: location.port,
-                headers: {
-                    'accept-encoding': 'gzip,deflate'
-                }
+                headers: this.adapter.resourceRequestHeaders(file)
             }, function(res) {
 
                 var encoding = res.headers['content-encoding'];
@@ -208,24 +205,6 @@ Resource.prototype = {
         var RE_SERVER = /^https?\:\/\//i;
         return RE_SERVER.test(src);
     }
-};
-
-
-Resource.defaults = {
-    resourceCache: function() {
-        if (!this._resourceCache) {
-            this._resourceCache = {};
-        }
-
-        return this._resourceCache;
-    },
-    resourceIgnore: function(file) {
-        return !file;
-    },
-    resourceMap: function(file) {
-        return file;
-    },
-    resourceBeforeLoad: function() {}
 };
 
 

@@ -2,11 +2,12 @@
 
 function BrowserAdapter(options) {
 
+    options = options || {};
+
     if (options instanceof BrowserAdapter) {
         return options;
     }
 
-    options = options || {};
     Object.keys(options).forEach(function(key) {
         var value = options[key];
         this[key] = value;
@@ -60,6 +61,17 @@ BrowserAdapter.prototype = {
      * @param   {String}    文件地址
      */
     resourceBeforeLoad: function(file) {// jshint ignore:line
+    },
+
+    /**
+     * 加载远程资源的自定义请求头
+     * @param   {String}    文件地址
+     * @return  {Object}
+     */
+    resourceRequestHeaders: function(file) {// jshint ignore:line
+        return {
+            'accept-encoding': 'gzip,deflate'
+        };
     }
 };
 

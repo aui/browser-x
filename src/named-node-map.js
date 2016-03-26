@@ -2,65 +2,63 @@
 
 function NamedNodeMap() {
     Object.defineProperties(this, {
-        _nodes: {
-            value: []
+        _index: {
+            value: {}
         }
     });
 }
 
-NamedNodeMap.prototype = Object.create(Object.prototype, {
-    length: {
-        get: function() {
-            return this._nodes.length;
-        }
-    }
-});
+NamedNodeMap.prototype = {
 
-NamedNodeMap.prototype.constructor = NamedNodeMap;
+    constructor: NamedNodeMap,
 
-// TODO 性能优化
-NamedNodeMap.prototype.getNamedItem = function(name) {
-    var node;
-    var i = -1;
-    var n = this._nodes.length;
-    while (++i < n) {
-        if ((node = this._nodes[i]).nodeName == name) {
-            return node;
-        }
-    }
-    return null;
-};
+    length: 0,
 
-NamedNodeMap.prototype.setNamedItem = function(node) {
-    var name = node.nodeName;
-    var oldNode;
-    var i = -1;
-    var n = this._nodes.length;
-    while (++i < n) {
-        if ((oldNode = this._nodes[i]).nodeName == name) {
-            this._nodes[i] = node;
+    getNamedItem: function(name) {
+        return this[this._index[name]] || null;
+    },
+
+    setNamedItem: function(node) {
+        var name = node.nodeName;
+        var index = this._index[name];
+
+        if (typeof index === 'number') {
+            var oldNode = this[index];
+            this[index] = node;
+
             return oldNode;
-        }
-    }
-    this._nodes.push(node);
-    return null;
-};
+        } else {
+            this[this.length] = node;
+            this._index[name] = this.length;
+            this.length++;
 
-NamedNodeMap.prototype.removeNamedItem = function(name) {
-    var node;
-    var i = -1;
-    var n = this._nodes.length;
-    while (++i < n) {
-        if ((node = this._nodes[i]).nodeName == name) {
-            this._nodes.splice(i, 1);
+            return null;
+        }
+    },
+
+    removeNamedItem: function(name) {
+        var index = this._index[name];
+
+        if (typeof index === 'number') {
+            var node = Array.prototype.splice.call(this, index, 1)[0];
+            var length = this.length;
+            index = -1;
+
+            // 重建索引
+            while (++index < length) {
+                this._index[this[index].nodeName] = index;
+            }
+
             return node;
+        } else {
+            return null;
         }
+    },
+
+    item: function(index) {
+        return this[index] || null;
     }
-    return null;
 };
 
-NamedNodeMap.prototype.item = function(index) {
-    return this._nodes[index] || null;
-};
 
 module.exports = NamedNodeMap;

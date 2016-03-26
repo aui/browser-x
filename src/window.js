@@ -22,6 +22,7 @@ function Window() {
 }
 
 
+// 针对 nwmatcher 的一些特殊处理
 Window.prototype._init = function() {
 
     if (this.document) {

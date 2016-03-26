@@ -4,12 +4,11 @@ var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
 var DocumentType = require('./document-type');
+var Element = require('./element');
 var HTMLElement = require('./html-element');
 var Node = require('./node');
 var Text = require('./text');
 var StyleSheetList = require('./style-sheet-list');
-var elementConfig = require('./html-element/config');
-
 
 
 function Document(options) {
@@ -108,12 +107,7 @@ Document.prototype.createElement = function(tagName) {
 };
 
 Document.prototype.createElementNS = function(namespaceURI, tagName) {
-    tagName = tagName.toUpperCase();
-    if (elementConfig[tagName]) {
-        return new elementConfig[tagName](this, tagName, namespaceURI);
-    } else {
-        return new HTMLElement(this, tagName, namespaceURI);
-    }
+    return HTMLElement(this, namespaceURI, tagName);
 };
 
 Document.prototype.createDocumentFragment = function() {
@@ -133,7 +127,7 @@ Document.prototype.createAttribute = function(name) {
 };
 
 Document.prototype.getElementsByTagName = function(tagName) {
-    return HTMLElement.prototype.getElementsByTagName.call(this, tagName);
+    return Element.prototype.getElementsByTagName.call(this, tagName);
 };
 
 // TODO restrict to just Element types
@@ -162,11 +156,11 @@ Document.prototype.getElementById = function(id) {
 };
 
 Document.prototype.querySelector = function(selector) {
-    return HTMLElement.prototype.querySelector.call(this, selector);
+    return Element.prototype.querySelector.call(this, selector);
 };
 
 Document.prototype.querySelectorAll = function(selector) {
-    return HTMLElement.prototype.querySelectorAll.call(this, selector);
+    return Element.prototype.querySelectorAll.call(this, selector);
 };
 
 

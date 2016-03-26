@@ -1,6 +1,5 @@
 'use strict';
 
-var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 var Element = require('../element');
 
 function HTMLOptionElement(document, name, namespaceURI) {
@@ -8,27 +7,6 @@ function HTMLOptionElement(document, name, namespaceURI) {
 }
 
 HTMLOptionElement.prototype = Object.create(Element.prototype, {
-    lang: {
-        get: function() {
-            return this.getAttribute('lang') || '';
-        }
-    },
-    style: {
-        get: function() {
-            if (this._style) {
-                return this._style;
-            } else {
-                var style = this._style = new CSSStyleDeclaration();
-                var cssText = this.getAttribute('style');
-
-                if (cssText) {
-                    style.cssText = cssText;
-                }
-
-                return this._style;
-            }
-        }
-    },
     index: {
         get: function() {
             var select = closest('SELECT');

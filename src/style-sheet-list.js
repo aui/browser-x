@@ -1,20 +1,16 @@
 'use strict';
 
-function StyleSheetList() {
-    this._length = 0;
-}
+function StyleSheetList() {}
 
 StyleSheetList.prototype = {
     constructor: StyleSheetList,
+    length: 0,
     item: function(i) {
         return this[i];
     },
     push: function(sheet) {
-        this[this._length] = sheet;
-        this._length++;
-    },
-    get length() {
-        return this._length;
+        this[this.length] = sheet;
+        this.length++;
     }
 };
 

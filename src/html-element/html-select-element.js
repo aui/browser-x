@@ -1,6 +1,5 @@
 'use strict';
 
-var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
 var Element = require('../element');
 
 function HTMLSelectElement(document, name, namespaceURI) {
@@ -8,27 +7,6 @@ function HTMLSelectElement(document, name, namespaceURI) {
 }
 
 HTMLSelectElement.prototype = Object.create(Element.prototype, {
-    lang: {
-        get: function() {
-            return this.getAttribute('lang') || '';
-        }
-    },
-    style: {
-        get: function() {
-            if (this._style) {
-                return this._style;
-            } else {
-                var style = this._style = new CSSStyleDeclaration();
-                var cssText = this.getAttribute('style');
-
-                if (cssText) {
-                    style.cssText = cssText;
-                }
-
-                return this._style;
-            }
-        }
-    },
     options: {
         // TODO HTMLOptionsCollection
         get: function() {

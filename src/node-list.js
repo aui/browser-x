@@ -1,6 +1,5 @@
 'use strict';
 
-// TODO 下标索引与`length`只读
 function NodeList(nodes) {
     Array.prototype.push.apply(this, nodes);
 }

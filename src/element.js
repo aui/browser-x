@@ -35,13 +35,6 @@ Element.prototype = Object.create(Node.prototype, {
     },
     innerHTML: {
         get: function() {
-            // TODO test
-            // if (/^(?:script|style)$/.test(this.tagName)) {
-            //     var type = this.getAttribute('type');
-            //     if (!type || /^text\//i.test(type) || /\/javascript$/i.test(type)) {
-            //         parse5.serialize(this.childNodes, this.ownerDocument._parserAdapter);
-            //     }
-            // }
             return parse5.serialize(this, this.ownerDocument._parserAdapter);
         }
     },

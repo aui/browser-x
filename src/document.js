@@ -88,6 +88,9 @@ Document.prototype = Object.create(Node.prototype, {
 
                     if (ownerNode.nodeName === 'LINK') {
                         cssStyleSheet.cssRules = null;
+                        cssStyleSheet.href = ownerNode.href
+                    } else {
+                        cssStyleSheet.href = null;
                     }
 
                     cssStyleSheet.ownerNode = ownerNode;

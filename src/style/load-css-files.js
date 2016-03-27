@@ -23,10 +23,11 @@ function loadCssFiles(document, resource) {
         if (nodeName === 'STYLE') {
             queue.push(loadImportFile(baseURI, cssStyleSheet));
         } else if (nodeName === 'LINK') {
-            var href = ownerNode.getAttribute('href');
-            var file = url.resolve(baseURI, href);
-            queue.push(resource.get(file).then(function(data) {
+            var href = ownerNode.href;
+            queue.push(resource.get(href).then(function(data) {
+                data = getContent(data);
                 cssStyleSheet.cssRules = cssom.parse(data).cssRules;
+                cssStyleSheet.href = href;
                 return loadImportFile(baseURI, cssStyleSheet);
             }));
         }
@@ -52,6 +53,7 @@ function loadCssFiles(document, resource) {
                     var cssStyleSheet = cssom.parse(data);
                     cssStyleSheet.parentStyleSheet = parentStyleSheet;
                     cssStyleRule.styleSheet = cssStyleSheet;
+                    cssStyleSheet.href = file;
                     return loadImportFile(file, cssStyleSheet);
                 }));
             }
@@ -61,6 +63,16 @@ function loadCssFiles(document, resource) {
     }
 
     return Promise.all(queue);
+}
+
+
+function getContent (content) {
+    // 去掉 @charset，因为它可能触发 cssom 库的 bug
+    // 使用空格占位避免改动代码位置
+    return content.replace(/^(\@charset\b.+?;)(.*?)/i, function ($0, $1, $2) {
+        var placeholder = new Array($1.length + 1).join(' ');
+        return placeholder + $2;
+    });
 }
 
 module.exports = loadCssFiles;

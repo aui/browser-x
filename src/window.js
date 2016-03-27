@@ -1,6 +1,6 @@
 'use strict';
 
-var CSSOM = require('./style');
+var cssom = require('./style');
 var getComputedStyle = require('./style/get-computed-style');
 
 
@@ -9,14 +9,21 @@ function Window() {
     this.onload = null;
     this.onerror = null;
 
-    this.StyleSheet = CSSOM.StyleSheet;
-    this.MediaList = CSSOM.MediaList;
-    this.CSSStyleSheet = CSSOM.CSSStyleSheet;
-    this.CSSRule = CSSOM.CSSRule;
-    this.CSSStyleRule = CSSOM.CSSStyleRule;
-    this.CSSMediaRule = CSSOM.CSSMediaRule;
-    this.CSSImportRule = CSSOM.CSSImportRule;
-    this.CSSStyleDeclaration = CSSOM.CSSStyleDeclaration;
+    this.CSSStyleDeclaration= cssom.CSSStyleDeclaration;
+    this.CSSRule= cssom.CSSRule;
+    this.CSSStyleRule= cssom.CSSStyleRule;
+    this.MediaList= cssom.MediaList;
+    this.CSSMediaRule= cssom.CSSMediaRule;
+    this.CSSImportRule= cssom.CSSImportRule;
+    this.CSSFontFaceRule= cssom.CSSFontFaceRule;
+    this.StyleSheet= cssom.StyleSheet;
+    this.CSSStyleSheet= cssom.CSSStyleSheet;
+    this.CSSKeyframesRule= cssom.CSSKeyframesRule;
+    this.CSSKeyframeRule= cssom.CSSKeyframeRule;
+    this.MatcherList= cssom.MatcherList;
+    this.CSSDocumentRule= cssom.CSSDocumentRule;
+    this.CSSValue= cssom.CSSValue;
+    this.CSSValueExpression= cssom.CSSValueExpression;
 
     this.getComputedStyle = getComputedStyle;
 }

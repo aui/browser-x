@@ -59,6 +59,13 @@ browser.sync = function(html, options) {
         treeAdapter: new ParserAdapter(options)
     };
 
+
+    if (html.isBuffer && html.isBuffer()) {
+        options.baseURI = html.path;
+        html = html.toString();
+    }
+
+
     var window = new Window();
     var document = parse5.parse(html, options.parserAdapter);
 

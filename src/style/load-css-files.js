@@ -27,7 +27,6 @@ function loadCssFiles(document, resource) {
             queue.push(resource.get(href).then(function(data) {
                 data = getContent(data);
                 var cssStyleSheet = cssom.parse(data);
-                //cssStyleSheet.cssRules = cssStyleSheet.cssRules;
                 cssStyleSheet.href = href;
                 styleSheets[index] = cssStyleSheet;
 

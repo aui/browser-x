@@ -8,9 +8,5 @@ function HTMLElement(document, name, namespaceURI) {
 }
 
 HTMLElement.prototype = Object.create(Element.prototype, {});
-
-
 HTMLElement.prototype.constructor = HTMLElement;
-
-
 module.exports = HTMLElement;

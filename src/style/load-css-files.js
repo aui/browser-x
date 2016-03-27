@@ -16,7 +16,7 @@ function loadCssFiles(document, resource) {
     var queue = [];
 
 
-    forEach.call(styleSheets, function(cssStyleSheet) {
+    forEach.call(styleSheets, function(cssStyleSheet, index) {
         var ownerNode = cssStyleSheet.ownerNode;
         var nodeName = ownerNode.nodeName;
 
@@ -26,8 +26,11 @@ function loadCssFiles(document, resource) {
             var href = ownerNode.href;
             queue.push(resource.get(href).then(function(data) {
                 data = getContent(data);
-                cssStyleSheet.cssRules = cssom.parse(data).cssRules;
+                var cssStyleSheet = cssom.parse(data);
+                //cssStyleSheet.cssRules = cssStyleSheet.cssRules;
                 cssStyleSheet.href = href;
+                styleSheets[index] = cssStyleSheet;
+
                 return loadImportFile(baseURI, cssStyleSheet);
             }));
         }
@@ -50,10 +53,12 @@ function loadCssFiles(document, resource) {
                 MAX_IMPORT --;
 
                 loadQueue.push(resource.get(file).then(function(data) {
+                    data = getContent(data);
                     var cssStyleSheet = cssom.parse(data);
-                    cssStyleSheet.parentStyleSheet = parentStyleSheet;
-                    cssStyleRule.styleSheet = cssStyleSheet;
+                    cssStyleSheet.parentStyleSheet = cssStyleSheet;
                     cssStyleSheet.href = file;
+                    cssStyleRule.styleSheet = cssStyleSheet;
+
                     return loadImportFile(file, cssStyleSheet);
                 }));
             }

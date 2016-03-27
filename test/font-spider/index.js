@@ -303,40 +303,18 @@ FontSpider.prototype = {
 
 
     /**
-     * 遍历字体规则
+     * 遍历自定义字体规则
      * @param   {Function}
      */
     eachCssFontFaceRule: function(callback) {
         var window = this.window;
-        var document = this.document;
         var CSSFontFaceRule = window.CSSFontFaceRule;
-        var CSSImportRule = window.CSSImportRule;
 
-        function styleSheetListFor(styleSheetList, callback) {
-            for (var i = 0; i < styleSheetList.length; i++) {
-                var cssStyleSheet = styleSheetList[i];
-                var cssRuleList = cssStyleSheet.cssRules || [];
-                cssRuleListFor(cssRuleList, callback);
+        this.eachCssRuleList(function(cssRule) {
+            if (cssRule instanceof CSSFontFaceRule) {
+                callback(cssRule);
             }
-        }
-
-
-        function cssRuleListFor(cssRuleList, callback) {
-            for (var n = 0; n < cssRuleList.length; n++) {
-                var cssRule = cssRuleList[n];
-
-                if (cssRule instanceof CSSFontFaceRule) {
-                    callback(cssRule);
-                } else if (cssRule instanceof CSSImportRule) {
-
-                    var cssStyleSheet = cssRule.styleSheet;
-                    cssRuleListFor(cssStyleSheet.cssRules || [], callback);
-
-                }
-            }
-        }
-
-        styleSheetListFor(document.styleSheets, callback);
+        });
     },
 
 
@@ -348,8 +326,24 @@ FontSpider.prototype = {
     eachCssStyleRule: function(callback) {
 
         var window = this.window;
-        var document = window.document;
         var CSSStyleRule = window.CSSStyleRule;
+
+        this.eachCssRuleList(function(cssRule) {
+            if (cssRule instanceof CSSStyleRule) {
+                callback(cssRule);
+            }
+        });
+    },
+
+
+    /**
+     * 遍历规则
+     * @param   {Function}
+     */
+    eachCssRuleList: function(callback) {
+
+        var window = this.window;
+        var document = window.document;
         var CSSImportRule = window.CSSImportRule;
         var CSSMediaRule = window.CSSMediaRule;
 
@@ -365,14 +359,14 @@ FontSpider.prototype = {
             for (var n = 0; n < cssRuleList.length; n++) {
                 var cssRule = cssRuleList[n];
 
-                if (cssRule instanceof CSSStyleRule) {
-                    callback(cssRule);
-                } else if (cssRule instanceof CSSImportRule ||
+                if (cssRule instanceof CSSImportRule ||
                     cssRule instanceof CSSMediaRule) {
 
                     var cssStyleSheet = cssRule.styleSheet;
                     cssRuleListFor(cssStyleSheet.cssRules || [], callback);
 
+                } else {
+                    callback(cssRule);
                 }
 
             }
@@ -397,6 +391,7 @@ function WebFont(id, name, files, chars, selectors) {
     this.files = files;
     this.chars = chars;
     this.selectors = selectors;
+    // TODO 粗细、风格
 }
 
 

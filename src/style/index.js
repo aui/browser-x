@@ -3,16 +3,23 @@ var cssom = require('cssom');
 var cssstyle = require('cssstyle');
 
 var CSSOM = {
-    StyleSheet : cssom.StyleSheet,
-    MediaList : cssom.MediaList,
-    CSSStyleSheet : cssom.CSSStyleSheet,
-    CSSRule : cssom.CSSRule,
-    CSSStyleRule : cssom.CSSStyleRule,
-    CSSMediaRule : cssom.CSSMediaRule,
-    CSSImportRule : cssom.CSSImportRule,
-    CSSStyleDeclaration : cssstyle.CSSStyleDeclaration
+    CSSStyleDeclaration: cssstyle.CSSStyleDeclaration,
+    CSSRule: cssom.CSSRule,
+    CSSStyleRule: cssom.CSSStyleRule,
+    MediaList: cssom.MediaList,
+    CSSMediaRule: cssom.CSSMediaRule,
+    CSSImportRule: cssom.CSSImportRule,
+    CSSFontFaceRule: cssom.CSSFontFaceRule,
+    StyleSheet: cssom.StyleSheet,
+    CSSStyleSheet: cssom.CSSStyleSheet,
+    CSSKeyframesRule: cssom.CSSKeyframesRule,
+    CSSKeyframeRule: cssom.CSSKeyframeRule,
+    MatcherList: cssom.MatcherList,
+    CSSDocumentRule: cssom.CSSDocumentRule,
+    CSSValue: cssom.CSSValue,
+    CSSValueExpression: cssom.CSSValueExpression,
+    parse: cssom.parse,
+    clone: cssom.clone,
 };
-
-CSSOM.parse = cssom.parse;
 
 module.exports = CSSOM;

@@ -5,6 +5,7 @@ var assert = require('assert');
 
 describe('Resource', function() {
     var resource = new Resource({
+        resourceTimeout: 500,
         resourceCache: function() {
             if (!this._resourceCache) {
                 this._resourceCache = {};
@@ -38,9 +39,25 @@ describe('Resource', function() {
 
         it('file not found', function(done) {
             resource.get(__dirname + '/file/404.html').then(function(data) {
-                throw new Error('');
-            }, function() {
-                done();
+                throw new Error('success');
+            }, function(errors) {
+                if (errors.path === __dirname + '/file/404.html') {
+                    done();
+                } else {
+                    throw new Error('errors.path');
+                }
+            });
+        });
+
+        it('file not found[http]', function(done) {
+            resource.get('http://facebook/404/404').then(function(data) {
+                throw new Error('success');
+            }, function(errors) {
+                if (errors.path === 'http://facebook/404/404') {
+                    done();
+                } else {
+                    throw new Error('errors.path');
+                }
             });
         });
 

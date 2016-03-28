@@ -9,7 +9,6 @@ function loadCssFiles(document, resource) {
         throw new Error('require `Resource`');
     }
 
-    var MAX_IMPORT = 64;
     var styleSheets = document.styleSheets;
     var baseURI = document.baseURI;
     var forEach = Array.prototype.forEach;
@@ -28,6 +27,8 @@ function loadCssFiles(document, resource) {
                 data = getContent(data);
                 var cssStyleSheet = cssom.parse(data);
                 cssStyleSheet.href = href;
+
+                // 在真正的浏览器中，如果跨域，cssStyleSheet.cssRules 会等于 null
                 styleSheets[index] = cssStyleSheet;
 
                 return loadImportFile(baseURI, cssStyleSheet);
@@ -42,14 +43,8 @@ function loadCssFiles(document, resource) {
         forEach.call(cssStyleSheet.cssRules, function(cssStyleRule) {
             if (cssStyleRule instanceof cssom.CSSImportRule) {
 
-                if (MAX_IMPORT === 0) {
-                    throw new Error('Exceeding the maximum limit on the number of file import');
-                }
-
                 var href = cssStyleRule.href;
                 var file = url.resolve(baseURI, href);
-
-                MAX_IMPORT --;
 
                 loadQueue.push(resource.get(file).then(function(data) {
                     data = getContent(data);

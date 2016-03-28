@@ -60,7 +60,7 @@ browser.sync = function(html, options) {
     };
 
 
-    if (html.isBuffer && html.isBuffer()) {
+    if (html.isBuffer && html.isBuffer() && html.path) {
         options.baseURI = html.path;
         html = html.toString();
     }
@@ -109,6 +109,8 @@ browser.sync = function(html, options) {
     return window;
 };
 
+
+browser.BrowserAdapter = BrowserAdapter;
 
 
 module.exports = browser;

@@ -1,4 +1,3 @@
-// TODO 超时配置参数
 'use strict';
 
 var fs = require('fs');
@@ -15,6 +14,7 @@ var BrowserAdapter = require('../adapters/browser-adapter');
 
 function Resource(adapter) {
     this.adapter = new BrowserAdapter(adapter);
+    this.number = 0;
 }
 
 Resource.prototype = {
@@ -28,8 +28,10 @@ Resource.prototype = {
      */
     get: function(file) {
 
+
         file = this.normalize(file);
 
+        this.number ++;
 
         var resource;
         var adapter = this.adapter;
@@ -42,6 +44,12 @@ Resource.prototype = {
             return Promise.resolve('');
         }
 
+        if (this.number > this.adapter.resourceMaxNumber) {
+            var errors = new Error('Exceed the maximum load limit on the number of resources');
+            errors = new Resource.Error(errors, file);
+            return Promise.reject(errors);
+        }
+
         adapter.resourceBeforeLoad(file);
 
         if (resourceCache[file]) {
@@ -50,6 +58,7 @@ Resource.prototype = {
                 return resource;
             }
         }
+
 
         resource = new Promise(function(resolve, reject) {
 

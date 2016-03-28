@@ -37,6 +37,12 @@ BrowserAdapter.prototype = {
     resourceTimeout: 5000,
 
     /**
+     * 最大的文件加载数量限制
+     * @tyoe    {Number}    数量
+     */
+    resourceMaxNumber: 64,
+
+    /**
      * 获取缓存
      * @return  {Object}
      */

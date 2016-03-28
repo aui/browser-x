@@ -2,11 +2,17 @@
 
 var crypto = require('crypto');
 var browser = require('../../');
+var Adapter = require('./adapter');
+
 var path = require('path');
 var url = require('url');
 
-function FontSpider(htmlFile, options) {
-    return browser.open(htmlFile, options).then(this.parse.bind(this));
+var RE_QUOTATION = /^["']|["']$/g;
+
+
+
+function FontSpider(htmlFile, adapter) {
+    return browser.open(htmlFile, adapter).then(this.parse.bind(this));
 }
 
 FontSpider.prototype = {
@@ -58,7 +64,7 @@ FontSpider.prototype = {
             return that.matcheElements(cssStyleRule).forEach(function(element) {
                 webFonts.push({
                     cssFontFaceRules: that.matcheFontFaces(cssStyleRule, cssFontFaceRules),
-                    selectorText: cssStyleRule.selectorText,
+                    selectorText: cssStyleRule.selectorText, // TODO 伪元素的选择器
                     content: element.textContent,
                     pseudoElementContent: that.getPseudoElementContent(contentCssStyleRules, element)
                 });
@@ -71,8 +77,7 @@ FontSpider.prototype = {
             var baseURI = cssFontFaceRule.parentStyleSheet.href;
             var style = cssFontFaceRule.style;
             var src = style.src;
-            var id = crypto.createHash('md5').update(src).digest('hex');
-            var name = style['font-family'].replace(/^["']|["']$/g, '');
+            var name = style['font-family'].replace(RE_QUOTATION, '');
             var files = that.parseFontFaceSrc(src, baseURI);
             var chars = '';
             var selectors = [];
@@ -85,7 +90,7 @@ FontSpider.prototype = {
                 }
             });
 
-            return new WebFont(id, name, files, chars, selectors);
+            return new WebFont(name, files, chars, selectors);
         });
     },
 
@@ -113,7 +118,7 @@ FontSpider.prototype = {
             var elements = this.matcheElements(cssStyleRule, true);
 
             if (hasOne(element, elements)) {
-                return cssStyleRule.style.content.replace(/^["']|["']$/g, '');
+                return cssStyleRule.style.content.replace(RE_QUOTATION, '');
             }
 
             return '';
@@ -165,25 +170,6 @@ FontSpider.prototype = {
 
 
     /**
-     * 解析字体规则
-     * @param   {CSSFontFaceRule}
-     * @param   {FontFace}
-     */
-    // parseCssFontFaceRule: function(cssFontFaceRule) {
-
-    //     var style = cssFontFaceRule.style;
-    //     var fontFamily = style['font-family'];
-    //     var files = [new FontType()]; // TODO 需要解析 src
-    //     var FontWeight = style['font-weight'];
-    //     var fontStyle = style['font-style'];
-    //     var fontFace = new FontFace(fontFamily, files, FontWeight, fontStyle);
-
-    //     return fontFace;
-    // },
-
-
-
-    /**
      * 解析 font-family 属性值为数组
      * @param   {String}
      * @return  {Array<String>}
@@ -196,6 +182,8 @@ FontSpider.prototype = {
         return list;
     },
 
+
+
     /**
      * 解析 @font-face src 值
      * @param   {String}    src 的属性值
@@ -206,15 +194,12 @@ FontSpider.prototype = {
         var list = [];
         var src;
 
-        // url(../font/font.ttf)
-        // url("../font/font.ttf")
-        // url('../font/font.ttf')
-        var RE_FONT_URL = /url\(["']?(.*?)["']?\)\s*format\(["']?(.*?)["']?\)/ig;
+        var RE_FONT_URL = /url\(["']?(.*?)["']?\)(?:\s*format\(["']?(.*?)["']?\))?/ig;
 
         RE_FONT_URL.lastIndex = 0;
 
         while ((src = RE_FONT_URL.exec(value)) !== null) {
-            list.push(new FontFile(src[1], src[2], baseURI));
+            list.push(new FontFile(baseURI, src[1], src[2]));
         }
 
         return list;
@@ -228,7 +213,7 @@ FontSpider.prototype = {
      * @return  {Boolean}
      */
     hasFontFace: function(cssStyleRule, cssFontFaceRules) {
-        // TODO 判断重 FontWeight 与 fontStyle 是否匹配
+
         var style = cssStyleRule.style;
         var fontFamily = style['font-family'];
 
@@ -239,7 +224,7 @@ FontSpider.prototype = {
         var fontFamilys = this.parseFontfamily(fontFamily);
         for (var i = 0, len = cssFontFaceRules.length; i < len; i++) {
             var fontFaceName = cssFontFaceRules[i].style['font-family'];
-            fontFaceName = fontFaceName.replace(/^["']|["']$/g, '');
+            fontFaceName = fontFaceName.replace(RE_QUOTATION, '');
 
             // TODO 判断重 FontWeight 与 fontStyle 是否匹配
             if (fontFamilys.indexOf(fontFaceName) !== -1) {
@@ -271,7 +256,7 @@ FontSpider.prototype = {
 
         for (var i = 0, len = cssFontFaceRules.length; i < len; i++) {
             var fontFaceName = cssFontFaceRules[i].style['font-family'];
-            fontFaceName = fontFaceName.replace(/^["']|["']$/g, '');
+            fontFaceName = fontFaceName.replace(RE_QUOTATION, '');
 
             // TODO 判断重 FontWeight 与 fontStyle 是否匹配
             if (fontFamilys.indexOf(fontFaceName) !== -1) {
@@ -303,7 +288,7 @@ FontSpider.prototype = {
 
 
     /**
-     * 遍历自定义字体规则
+     * 遍历每一条自定义字体规则
      * @param   {Function}
      */
     eachCssFontFaceRule: function(callback) {
@@ -320,7 +305,7 @@ FontSpider.prototype = {
 
 
     /**
-     * 遍历选择器的规则
+     * 遍历每一条选择器的规则
      * @param   {Function}
      */
     eachCssStyleRule: function(callback) {
@@ -337,7 +322,7 @@ FontSpider.prototype = {
 
 
     /**
-     * 遍历规则
+     * 遍历每一条规则
      * @param   {Function}
      */
     eachCssRuleList: function(callback) {
@@ -380,27 +365,33 @@ FontSpider.prototype = {
 
 /**
  * WebFont 描述类
- * @param   {String}            字体 ID
  * @param   {String}            字体名
  * @param   {Array<FontFile>}   路径列表
+ * @param   {String}            被网页应用的字符
  * @param   {Array<String>}     应用的 CSS 选择器
  */
-function WebFont(id, name, files, chars, selectors) {
-    this.id = id;
+function WebFont(name, files, chars, selectors) {
+    this.id = crypto
+        .createHash('md5')
+        .update(files.join(','))
+        .digest('hex');
+
     this.name = name;
     this.files = files;
     this.chars = chars;
     this.selectors = selectors;
+
     // TODO 粗细、风格
 }
 
 
 /**
  * font-face 路径与字体类型描述信息类
- * @param   {String}            路径
+ * @param   {String}            基础路径
+ * @param   {String}            源路径
  * @param   {String}            类型
  */
-function FontFile(source, format, baseURI) {
+function FontFile(baseURI, source, format) {
 
     if (baseURI) {
         source = url.resolve(baseURI, source);
@@ -422,6 +413,8 @@ function FontFile(source, format, baseURI) {
                 format = 'svg';
                 break;
         }
+    } else {
+        format = format.toLowerCase();
     }
 
     this.source = source;
@@ -433,16 +426,109 @@ FontFile.prototype.toString = function() {
 };
 
 
-module.exports = function createFontSpider(htmlFiles, options) {
+module.exports = function createFontSpider(htmlFiles, options, callback) {
+
 
     if (!Array.isArray(htmlFiles)) {
         htmlFiles = [htmlFiles];
     }
 
+    callback = callback || function() {};
 
+
+    var adapter = new Adapter(options);
     var queue = htmlFiles.map(function(htmlFile) {
-        return new FontSpider(htmlFile, options);
-    }, this);
+        return new FontSpider(htmlFile, adapter);
+    });
 
-    return Promise.all(queue);
+    return Promise.all(queue).then(function(webFonts) {
+
+        webFonts = reduce(webFonts);
+
+        var list = [];
+        var indexs = {};
+
+
+        // 合并相同 font-face 的查询数据
+        webFonts.forEach(function(webFont) {
+            var id = webFont.id;
+            if (typeof indexs[id] === 'number') {
+                var item = list[indexs[id]];
+                item.chars += webFont.chars;
+                item.selectors = item.selectors.concat(webFont.selectors);
+                item.files = item.files.filter(function(file) {
+                    return adapter.resourceIgnore(file.source);
+                });
+            } else {
+                indexs[id] = list.length;
+                list.push(webFont);
+            }
+        });
+
+
+        // 处理 chars 字段
+        list.forEach(function(font) {
+
+            var chars = font.chars.split('');
+
+            // 对字符进行除重操作
+            if (adapter.unique) {
+                chars = unique(chars);
+            }
+
+            // 对字符按照编码进行排序
+            if (adapter.sort) {
+                chars.sort(sort);
+            }
+
+            // 删除无用字符
+            chars = chars.join('').replace(/[\n\r\t]/g, '');
+
+            font.chars = chars;
+        });
+
+
+        process.nextTick(function() {
+            callback(null, list);
+        });
+
+
+        return list;
+    }, function(errors) {
+        process.nextTick(function() {
+            callback(errors);
+        });
+    });
+
+
+
+    // 扁平化二维数组
+    function reduce(array) {
+        var ret = [];
+
+        array.forEach(function(item) {
+            ret.push.apply(ret, item);
+        });
+
+        return ret;
+    }
+
+
+    function sort(a, b) {
+        return a.charCodeAt() - b.charCodeAt();
+    }
+
+
+    function unique(array) {
+        var ret = [];
+
+        array.forEach(function(val) {
+            if (ret.indexOf(val) === -1) {
+                ret.push(val);
+            }
+        });
+
+        return ret;
+    }
+
 };

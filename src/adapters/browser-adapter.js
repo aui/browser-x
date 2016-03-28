@@ -31,6 +31,12 @@ BrowserAdapter.prototype = {
     loadCssFile: false,
 
     /**
+     * 请求超时限制
+     * @type    {Number}    毫秒
+     */
+    resourceTimeout: 5000,
+
+    /**
      * 获取缓存
      * @return  {Object}
      */

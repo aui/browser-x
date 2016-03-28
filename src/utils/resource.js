@@ -14,7 +14,7 @@ var BrowserAdapter = require('../adapters/browser-adapter');
 
 
 function Resource(adapter) {
-    this.adapter = adapter || new BrowserAdapter();
+    this.adapter = new BrowserAdapter(adapter);
 }
 
 Resource.prototype = {
@@ -61,18 +61,13 @@ Resource.prototype = {
 
             function onload(errors, data) {
                 if (errors) {
+                    errors = new Resource.Error(errors, file);
                     reject(errors);
                 } else {
                     resolve(data.toString());
                 }
             }
 
-        });
-
-
-        resource.catch(function(errors) {
-            errors = new VError(errors, 'ENOENT, load "%s" failed', file);
-            return Promise.reject(errors);
         });
 
 
@@ -98,6 +93,8 @@ Resource.prototype = {
     loadRemoteFile: function(file, callback) {
         var location = url.parse(file);
         var protocol = location.protocol === 'http:' ? http : https;
+        var timeoutEventId;
+
 
         var request = protocol.request({
                 method: 'GET',
@@ -138,6 +135,8 @@ Resource.prototype = {
 
                     res.on('end', function() {
 
+                        clearTimeout(timeoutEventId);
+
                         if (encoding === 'gzip') {
 
                             zlib.unzip(buffer, function(errors, buffer) {
@@ -167,7 +166,24 @@ Resource.prototype = {
                 }
 
             })
-            .on('error', callback);
+            .on('error', function(errors) {
+                clearTimeout(timeoutEventId);
+                callback(errors);
+            })
+            .on('timeout', function() {
+                if (request.res) {
+                    request.res.abort();
+                }
+                request.abort();
+            });
+
+
+        timeoutEventId = setTimeout(function() {
+            request.emit('timeout', {
+                message: 'have been timeout...'
+            });
+        }, this.adapter.resourceTimeout);
+
 
         request.end();
 
@@ -206,6 +222,19 @@ Resource.prototype = {
         return RE_SERVER.test(src);
     }
 };
+
+
+Resource.Error = ResourceError;
+
+function ResourceError(errors, file) {
+    Error.call(this, new VError(errors, 'ENOENT, load "%s" failed', file));
+
+    if (!this.path) {
+        this.path = file;
+    }
+}
+ResourceError.prototype = Object.create(Error.prototype);
+ResourceError.prototype.constructor = ResourceError;
 
 
 module.exports = Resource;

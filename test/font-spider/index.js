@@ -1,12 +1,11 @@
 'use strict';
 
-var crypto = require('crypto');
-var browser = require('../../');
-var Adapter = require('./adapter');
-
 var path = require('path');
 var url = require('url');
+var crypto = require('crypto');
+var browser = require('../../');
 
+var Adapter = require('./adapter');
 var RE_QUOTATION = /^["']|["']$/g;
 
 
@@ -152,13 +151,13 @@ FontSpider.prototype = {
         var document = this.document;
         var RE_DPSEUDOS = /\:(link|visited|target|active|focus|hover|checked|disabled|enabled|selected|lang\(([-\w]{2,})\)|not\(([^()]*|.*)\))?(.*)/i;
         var selectorText = cssStyleRule.selectorText;
-        var selector;
+        var selector = selectorText;
 
         if (isPseudo) {
-            selector = selectorText.replace(/\:+(before|after)$/, '') || '*';
+            selector = selector.replace(/\:+(before|after)$/, '') || '*';
         }
 
-        selector = selectorText.replace(RE_DPSEUDOS, '');
+        selector = selector.replace(RE_DPSEUDOS, '');
 
         try {
             return Array.prototype.slice.call(document.querySelectorAll(selector));
@@ -213,30 +212,13 @@ FontSpider.prototype = {
      * @return  {Boolean}
      */
     hasFontFace: function(cssStyleRule, cssFontFaceRules) {
-
-        var style = cssStyleRule.style;
-        var fontFamily = style['font-family'];
-
-        if (!fontFamily) {
-            return false;
-        }
-
-        var fontFamilys = this.parseFontfamily(fontFamily);
-        for (var i = 0, len = cssFontFaceRules.length; i < len; i++) {
-            var fontFaceName = cssFontFaceRules[i].style['font-family'];
-            fontFaceName = fontFaceName.replace(RE_QUOTATION, '');
-
-            // TODO 判断重 FontWeight 与 fontStyle 是否匹配
-            if (fontFamilys.indexOf(fontFaceName) !== -1) {
-                return true;
-            }
-        }
-        return false;
+        return !!this.matcheFontFaces(cssStyleRule, cssFontFaceRules).length;
     },
 
 
     /**
      * 获取被当前 CSS 规则使用的 @font-face 规则
+     * TODO    https://www.w3.org/html/ig/zh/wiki/CSS3字体模块#.E5.AD.97.E4.BD.93.E5.8C.B9.E9.85.8D.E7.AE.97.E6.B3.95
      * @param   {CSSStyleRule}
      * @param   {Array<CSSFontFaceRule>}
      * @return  {Array<CSSFontFaceRule>}
@@ -258,7 +240,6 @@ FontSpider.prototype = {
             var fontFaceName = cssFontFaceRules[i].style['font-family'];
             fontFaceName = fontFaceName.replace(RE_QUOTATION, '');
 
-            // TODO 判断重 FontWeight 与 fontStyle 是否匹配
             if (fontFamilys.indexOf(fontFaceName) !== -1) {
                 list.push(cssFontFaceRules[i]);
             }
@@ -278,7 +259,7 @@ FontSpider.prototype = {
         var style = cssStyleRule.style;
         var content = style.content;
 
-        if (content && /\:+\w+$/.test(selectorText)) { // TODO
+        if (content && /\:+(before|after)$/.test(selectorText)) {
             return true;
         } else {
             return false;
@@ -424,6 +405,10 @@ function FontFile(baseURI, source, format) {
 FontFile.prototype.toString = function() {
     return this.source;
 };
+
+
+
+
 
 
 module.exports = function createFontSpider(htmlFiles, options, callback) {

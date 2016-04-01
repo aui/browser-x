@@ -1,5 +1,6 @@
 'use strict';
 
+var VError = require('verror');
 var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
@@ -13,15 +14,21 @@ var StyleSheetList = require('./style-sheet-list');
 
 function Document(options) {
     Node.call(this, this, '#document', null, Node.DOCUMENT_NODE);
-    this.defaultView = {};
+    this.defaultView = null;
     this._doctype = null;
     this._documentElement = null;
     this._styleSheets = null;
-    this._parserAdapter = options.parserAdapter;
-    this._baseURI = options.baseURI || '';
+    this._options = options;
+    this._baseURI = options.baseURI;
 }
 
 Document.prototype = Object.create(Node.prototype, {
+    URL: {
+        get: function() {
+            // TODO
+            return this._baseURI;
+        }
+    },
     baseURI: {
         get: function() {
             var base = this.getElementsByTagName('base').item(0);
@@ -75,6 +82,8 @@ Document.prototype = Object.create(Node.prototype, {
     },
     styleSheets: {
         get: function() {
+            var debug = this._options.debug;
+
             if (!this._styleSheets) {
                 this._styleSheets = new StyleSheetList();
 
@@ -84,11 +93,11 @@ Document.prototype = Object.create(Node.prototype, {
 
                     var ownerNode = nodeList.item(i);
                     var textContent = ownerNode.textContent;
-                    var cssStyleSheet = cssom.parse(textContent);
+                    var cssStyleSheet = cssParse(textContent, this.URL, debug);
 
                     if (ownerNode.nodeName === 'LINK') {
                         cssStyleSheet.cssRules = null;
-                        cssStyleSheet.href = ownerNode.href
+                        cssStyleSheet.href = ownerNode.href;
                     } else {
                         cssStyleSheet.href = null;
                     }
@@ -97,7 +106,20 @@ Document.prototype = Object.create(Node.prototype, {
                     this._styleSheets.push(cssStyleSheet);
                 }
             }
+
+
             return this._styleSheets;
+
+            function cssParse(data, file, debug) {
+                try {
+                    return cssom.parse(data);
+                } catch (errors) {
+                    if (debug) {
+                        throw new VError(errors, 'parse "%s" <style>...</style> failed', file);
+                    }
+                    return cssom.parse('');
+                }
+            }
         }
     }
 });

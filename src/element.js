@@ -35,7 +35,7 @@ Element.prototype = Object.create(Node.prototype, {
     },
     innerHTML: {
         get: function() {
-            return parse5.serialize(this, this.ownerDocument._parserAdapter);
+            return parse5.serialize(this, this.ownerDocument._options.parserAdapter);
         }
     },
     outerHTML: {
@@ -43,7 +43,7 @@ Element.prototype = Object.create(Node.prototype, {
             // @see parse5: SerializerOptions.getChildNodes
             return parse5.serialize({
                 childNodes: new NodeList([this])
-            }, this.ownerDocument._parserAdapter);
+            }, this.ownerDocument._options.parserAdapter);
         }
     },
     baseURI: {

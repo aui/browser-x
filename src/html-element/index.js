@@ -54,7 +54,7 @@ function define(prototype) {
 
 function createElementNS(document, namespaceURI, tagName) {
     tagName = tagName.toUpperCase();
-    if (config[tagName]) {
+    if (config.hasOwnProperty(tagName)) {
         return new config[tagName](document, tagName, namespaceURI);
     } else {
         return new config['*'](document, tagName, namespaceURI);

@@ -1,8 +1,13 @@
 @font-face {
     src: url('../font/normal22222.woff') format('woff');
-    font-family: 'test3';
+    font-family: '糖饼';
     font-variant: normal;
     font-stretch: normal;
     font-weight: normal;
     font-style: normal;
+}
+
+::after {
+    content: '你好';
+    font-family: '糖饼'
 }

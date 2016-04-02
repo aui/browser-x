@@ -179,18 +179,15 @@ Resource.prototype = {
                 clearTimeout(timeoutEventId);
                 callback(errors);
             })
-            .on('timeout', function() {
-                if (request.res) {
-                    request.res.abort();
-                }
+            .on('timeout', function(errors) {
+                clearTimeout(timeoutEventId);
                 request.abort();
+                callback(errors);
             });
 
 
         timeoutEventId = setTimeout(function() {
-            request.emit('timeout', {
-                message: 'have been timeout...'
-            });
+            request.emit('timeout', new Error('have been timeout'));
         }, this.adapter.resourceTimeout);
 
 
@@ -236,13 +233,13 @@ Resource.prototype = {
 Resource.Error = ResourceError;
 
 function ResourceError(errors, file) {
-    Error.call(this, new VError(errors, 'ENOENT, load "%s" failed', file));
+    VError.call(this, new VError(errors, 'ENOENT, load "%s" failed', file));
 
     if (!this.path) {
         this.path = file;
     }
 }
-ResourceError.prototype = Object.create(Error.prototype);
+ResourceError.prototype = Object.create(VError.prototype);
 ResourceError.prototype.constructor = ResourceError;
 
 

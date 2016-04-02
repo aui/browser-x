@@ -82,7 +82,7 @@ Document.prototype = Object.create(Node.prototype, {
     },
     styleSheets: {
         get: function() {
-            var debug = this._options.debug;
+            var silent = this._options.silent;
 
             if (!this._styleSheets) {
                 this._styleSheets = new StyleSheetList();
@@ -93,7 +93,7 @@ Document.prototype = Object.create(Node.prototype, {
 
                     var ownerNode = nodeList.item(i);
                     var textContent = ownerNode.textContent;
-                    var cssStyleSheet = cssParse(textContent, this.URL, debug);
+                    var cssStyleSheet = cssParse(textContent, this.URL, silent);
 
                     if (ownerNode.nodeName === 'LINK') {
                         cssStyleSheet.cssRules = null;
@@ -110,11 +110,11 @@ Document.prototype = Object.create(Node.prototype, {
 
             return this._styleSheets;
 
-            function cssParse(data, file, debug) {
+            function cssParse(data, file, silent) {
                 try {
                     return cssom.parse(data);
                 } catch (errors) {
-                    if (debug) {
+                    if (!silent) {
                         throw new VError(errors, 'parse "%s" <style>...</style> failed', file);
                     }
                     return cssom.parse('');

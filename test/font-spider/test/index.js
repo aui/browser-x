@@ -2,7 +2,7 @@ var fontSpider = require('../');
 
 fontSpider(__dirname + '/index.html', {
     loadCssFile: true,
-    debug: true
+    silent: false
 }).then(function(data) {
     //console.log(data)
     console.log(JSON.stringify(data, null, 4))

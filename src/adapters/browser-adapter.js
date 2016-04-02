@@ -31,10 +31,10 @@ BrowserAdapter.prototype = {
     loadCssFile: false,
 
     /**
-     * 是否开启调试模式
+     * 解析时是否静默失败
      * @type    {Boolean}
      */
-    debug: false,
+    silent: true,
 
     /**
      * 请求超时限制

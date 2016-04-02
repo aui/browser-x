@@ -6,7 +6,7 @@ var fs = require('fs');
 
 browser.open(__dirname + '/debug.html', {
     loadCssFile: false,
-    debug: true
+    silent: false
 }, function(errors, window) {
     if (errors) {
         //console.log(errors);

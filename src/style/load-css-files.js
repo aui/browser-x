@@ -13,7 +13,7 @@ function loadCssFiles(document, resource) {
 
     var styleSheets = document.styleSheets;
     var baseURI = document.baseURI;
-    var debug = document._options.debug;
+    var silent = document._options.silent;
     var forEach = Array.prototype.forEach;
     var loadQueue = [];
 
@@ -23,7 +23,7 @@ function loadCssFiles(document, resource) {
         var nodeName = ownerNode.nodeName;
 
         if (nodeName === 'STYLE') {
-            loadQueue.push(loadImportFile(resource, baseURI, cssStyleSheet, debug));
+            loadQueue.push(loadImportFile(resource, baseURI, cssStyleSheet, silent));
         } else if (nodeName === 'LINK') {
             var href = ownerNode.href;
             loadQueue.push(resource.get(href).then(function(data) {
@@ -35,7 +35,7 @@ function loadCssFiles(document, resource) {
                 // TODO 在真正的浏览器中跨域，cssStyleSheet.cssRules 会等于 null
                 styleSheets[index] = cssStyleSheet;
 
-                return loadImportFile(resource, baseURI, cssStyleSheet, debug);
+                return loadImportFile(resource, baseURI, cssStyleSheet, silent);
             }));
         }
     });
@@ -48,7 +48,7 @@ function loadCssFiles(document, resource) {
 
 
 
-function loadImportFile(resource, baseURI, cssStyleSheet, debug) {
+function loadImportFile(resource, baseURI, cssStyleSheet, silent) {
     var loadQueue = [];
     var forEach = Array.prototype.forEach;
     forEach.call(cssStyleSheet.cssRules, function(cssStyleRule) {
@@ -60,12 +60,12 @@ function loadImportFile(resource, baseURI, cssStyleSheet, debug) {
             loadQueue.push(resource.get(file).then(function(data) {
                 data = getContent(data);
                 var baseURI = file;
-                var cssStyleSheet = cssParse(data, file, debug);
+                var cssStyleSheet = cssParse(data, file, silent);
                 cssStyleSheet.parentStyleSheet = cssStyleSheet;
                 cssStyleSheet.href = file;
                 cssStyleRule.styleSheet = cssStyleSheet;
 
-                return loadImportFile(resource, baseURI, cssStyleSheet, debug);
+                return loadImportFile(resource, baseURI, cssStyleSheet, silent);
             }));
         }
     });
@@ -76,12 +76,12 @@ function loadImportFile(resource, baseURI, cssStyleSheet, debug) {
 
 
 
-function cssParse(data, file, debug) {
+function cssParse(data, file, silent) {
     try {
         return cssom.parse(data);
     } catch (errors) {
 
-        if (debug) {
+        if (!silent) {
             throw new VError(errors, 'parse "%s" failed', file);
         }
 

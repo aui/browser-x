@@ -17,13 +17,12 @@ function loadCssFiles(document, resource) {
     var forEach = Array.prototype.forEach;
     var loadQueue = [];
 
-
     forEach.call(styleSheets, function(cssStyleSheet, index) {
         var ownerNode = cssStyleSheet.ownerNode;
         var nodeName = ownerNode.nodeName;
 
         if (nodeName === 'STYLE') {
-            loadQueue.push(loadImportFile(resource, baseURI, cssStyleSheet, silent));
+            loadQueue.push(loadImportFile(baseURI, cssStyleSheet));
         } else if (nodeName === 'LINK') {
             var href = ownerNode.href;
             loadQueue.push(resource.get(href).then(function(data) {
@@ -35,56 +34,62 @@ function loadCssFiles(document, resource) {
                 // TODO 在真正的浏览器中跨域，cssStyleSheet.cssRules 会等于 null
                 styleSheets[index] = cssStyleSheet;
 
-                return loadImportFile(resource, baseURI, cssStyleSheet, silent);
-            }));
+                return loadImportFile(baseURI, cssStyleSheet);
+            }, onerror));
         }
     });
 
 
+    function loadImportFile(baseURI, cssStyleSheet) {
+        var loadQueue = [];
+        var forEach = Array.prototype.forEach;
+        forEach.call(cssStyleSheet.cssRules, function(cssStyleRule) {
+            if (cssStyleRule instanceof cssom.CSSImportRule) {
 
-    return Promise.all(loadQueue);
-}
+                var href = cssStyleRule.href;
+                var file = url.resolve(baseURI, href);
 
+                loadQueue.push(resource.get(file).then(function(data) {
+                    data = getContent(data);
+                    var baseURI = file;
+                    var cssStyleSheet = cssParse(data, file);
+                    cssStyleSheet.parentStyleSheet = cssStyleSheet;
+                    cssStyleSheet.href = file;
+                    cssStyleRule.styleSheet = cssStyleSheet;
+                    return loadImportFile(baseURI, cssStyleSheet);
+                }, onerror));
+            }
+        });
 
-
-function loadImportFile(resource, baseURI, cssStyleSheet, silent) {
-    var loadQueue = [];
-    var forEach = Array.prototype.forEach;
-    forEach.call(cssStyleSheet.cssRules, function(cssStyleRule) {
-        if (cssStyleRule instanceof cssom.CSSImportRule) {
-
-            var href = cssStyleRule.href;
-            var file = url.resolve(baseURI, href);
-
-            loadQueue.push(resource.get(file).then(function(data) {
-                data = getContent(data);
-                var baseURI = file;
-                var cssStyleSheet = cssParse(data, file, silent);
-                cssStyleSheet.parentStyleSheet = cssStyleSheet;
-                cssStyleSheet.href = file;
-                cssStyleRule.styleSheet = cssStyleSheet;
-
-                return loadImportFile(resource, baseURI, cssStyleSheet, silent);
-            }));
-        }
-    });
-
-    return Promise.all(loadQueue);
-}
-
-
-
-function cssParse(data, file, silent) {
-    try {
-        return cssom.parse(data);
-    } catch (errors) {
-
-        if (!silent) {
-            throw new VError(errors, 'parse "%s" failed"', file);
-        }
-
-        return cssom.parse('');
+        return Promise.all(loadQueue);
     }
+
+
+    function onerror(errors) {
+        if (silent) {
+            return Promise.resolve('');
+        } else {
+            return Promise.reject(errors);
+        }
+    }
+
+
+    function cssParse(data, file) {
+        try {
+            return cssom.parse(data);
+        } catch (errors) {
+
+            if (!silent) {
+                throw new VError(errors, 'parse "%s" failed"', file);
+            }
+
+            return cssom.parse('');
+        }
+    }
+
+
+
+    return Promise.all(loadQueue);
 }
 
 

@@ -100,9 +100,17 @@ Resource.prototype = {
      * @param  {String}    回调
      */
     loadRemoteFile: function(file, callback) {
+        var number = arguments[2] || 0;
         var location = url.parse(file);
         var protocol = location.protocol === 'http:' ? http : https;
         var timeoutEventId;
+        var that = this;
+        var REDIRECTION_MAX = 3;
+
+        var done = function (errors, data) {
+            clearTimeout(timeoutEventId);
+            callback(errors, data);
+        }
 
 
         var request = protocol.request({
@@ -116,18 +124,26 @@ Resource.prototype = {
 
                 var encoding = res.headers['content-encoding'];
                 var type = res.headers['content-type'];
+                var statusCode = res.statusCode;
                 var errors = null;
 
-
-                if (!/2\d\d/.test(res.statusCode)) {
+                if (/3\d\d/.test(statusCode) && res.headers.location && number < REDIRECTION_MAX) {
+                    clearTimeout(timeoutEventId);
+                    var file = res.headers.location;
+                    number ++;
+                    that.loadRemoteFile(file, callback, number);
+                    return;
+                } else if (!/2\d\d/.test(statusCode)) {
                     errors = new Error(res.statusMessage);
-                } else if (type.indexOf('text/') !== 0) {
+                }
+
+                if (type.indexOf('text/') !== 0) {
                     errors = new Error('only supports `text/*` resources');
                 }
 
 
                 if (errors) {
-                    callback(errors);
+                    done(errors);
                 } else {
 
                     var buffer = new Buffer([]);
@@ -144,15 +160,13 @@ Resource.prototype = {
 
                     res.on('end', function() {
 
-                        clearTimeout(timeoutEventId);
-
                         if (encoding === 'gzip') {
 
                             zlib.unzip(buffer, function(errors, buffer) {
                                 if (errors) {
-                                    callback(errors);
+                                    done(errors);
                                 } else {
-                                    callback(null, buffer);
+                                    done(null, buffer);
                                 }
                             });
 
@@ -160,14 +174,14 @@ Resource.prototype = {
 
                             zlib.inflate(buffer, function(errors, decoded) {
                                 if (errors) {
-                                    callback(errors);
+                                    done(errors);
                                 } else {
-                                    callback(null, decoded);
+                                    done(null, decoded);
                                 }
                             });
 
                         } else {
-                            callback(null, buffer);
+                            done(null, buffer);
                         }
 
                     });
@@ -175,14 +189,10 @@ Resource.prototype = {
                 }
 
             })
-            .on('error', function(errors) {
-                clearTimeout(timeoutEventId);
-                callback(errors);
-            })
+            .on('error', done)
             .on('timeout', function(errors) {
-                clearTimeout(timeoutEventId);
                 request.abort();
-                callback(errors);
+                done(errors);
             });
 
 

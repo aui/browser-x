@@ -328,7 +328,7 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
         process.nextTick(function() {
             callback(errors);
         });
-        return errors;
+        return Promise.reject(errors);
     });
 
 

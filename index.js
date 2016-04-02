@@ -88,6 +88,7 @@ browser.sync = function(html, options) {
                             window.onerror(errors);
                         }
                     });
+                    return Promise.reject(errors);
                 });
             } else {
                 process.nextTick(onload);

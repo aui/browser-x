@@ -115,7 +115,7 @@ Document.prototype = Object.create(Node.prototype, {
                     return cssom.parse(data);
                 } catch (errors) {
                     if (!silent) {
-                        throw new VError(errors, 'parse "%s" <style>%s</style> failed', file, data);
+                        throw new VError(errors, 'parse "%s" failed. <style>%s</style>', file, data);
                     }
                     return cssom.parse('');
                 }

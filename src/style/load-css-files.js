@@ -47,7 +47,6 @@ function loadCssFiles(document, resource) {
 
 
 
-
 function loadImportFile(resource, baseURI, cssStyleSheet, silent) {
     var loadQueue = [];
     var forEach = Array.prototype.forEach;
@@ -75,20 +74,18 @@ function loadImportFile(resource, baseURI, cssStyleSheet, silent) {
 
 
 
-
 function cssParse(data, file, silent) {
     try {
         return cssom.parse(data);
     } catch (errors) {
 
         if (!silent) {
-            throw new VError(errors, 'parse "%s" failed', file);
+            throw new VError(errors, 'parse "%s" failed"', file);
         }
 
         return cssom.parse('');
     }
 }
-
 
 
 

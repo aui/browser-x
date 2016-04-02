@@ -1,13 +1,8 @@
 'use strict';
 
-var path = require('path');
-var url = require('url');
-var crypto = require('crypto');
 var browser = require('../../');
-
+var FontFace = require('./font-face');
 var Adapter = require('./adapter');
-var RE_QUOTATION = /^["']|["']$/g;
-
 
 
 function FontSpider(htmlFile, adapter) {
@@ -28,75 +23,64 @@ FontSpider.prototype = {
         this.window = window;
         this.document = window.document;
 
-        var webFonts = [];
-        var cssFontFaceRules = [];
-        var fontFamilyCssStyleRules = [];
-        var contentCssStyleRules = [];
-
-
-
-        // 获取 fontFace 列表
-        this.eachCssFontFaceRule(function(cssFontFaceRule) {
-            cssFontFaceRules.push(cssFontFaceRule);
-        });
-
-
-
-        this.eachCssStyleRule(function(cssStyleRule) {
-
-            // 获取应用了 FontFace 的规则
-            if (that.hasFontFace(cssStyleRule, cssFontFaceRules)) {
-                fontFamilyCssStyleRules.push(cssStyleRule);
+        var fontFaces = [];
+        this.eachCssRuleList(function(cssRule) {
+            if (cssRule instanceof window.CSSFontFaceRule) {
+                var fontFace = FontFace.parse(cssRule);
+                fontFaces.push(fontFace);
             }
-
-            // 获取应用 content 的规则
-            if (that.hasContent(cssStyleRule)) {
-                contentCssStyleRules.push(cssStyleRule);
-            }
-
         });
 
 
+        var pseudoCssStyleRules = [];
 
-        // 获取应用了 @font-face 的文本
-        fontFamilyCssStyleRules.map(function(cssStyleRule) {
-            return that.matcheElements(cssStyleRule).forEach(function(element) {
-                webFonts.push({
-                    cssFontFaceRules: that.matcheFontFaces(cssStyleRule, cssFontFaceRules),
-                    selectorText: cssStyleRule.selectorText, // TODO 伪元素的选择器
-                    content: element.textContent,
-                    pseudoElementContent: that.getPseudoElementContent(contentCssStyleRules, element)
-                });
-            });
-        });
+        var webFonts = fontFaces.map(function(fontFace) {
+            var webFont = new FontSpider.WebFont(fontFace, '', []);
+            webFont._elements = [];
 
+            that.eachCssStyleRule(function(cssStyleRule) {
 
+                if (fontFace.matche(cssStyleRule)) {
+                    if (that.hasContent(cssStyleRule)) {
+                        webFont.chars += that.parsePseudoElementContent(cssStyleRule);
+                    } else {
 
-        return cssFontFaceRules.map(function(cssFontFaceRule) {
-            var baseURI = cssFontFaceRule.parentStyleSheet.href;
-            var style = cssFontFaceRule.style;
-            var src = style.src;
-            var name = style['font-family'].replace(RE_QUOTATION, '');
-            var files = that.parseFontFaceSrc(src, baseURI);
-            var chars = '';
-            var selectors = [];
+                        that.matcheElements(cssStyleRule.selectorText)
+                            .forEach(function(element) {
+                                if (webFont._elements.indexOf(element) === -1) {
+                                    webFont._elements.push(element);
+                                }
 
-            webFonts.forEach(function(item) {
-                if (item.cssFontFaceRules.indexOf(cssFontFaceRule) !== -1) {
-                    chars += item.content;
-                    chars += item.pseudoElementContent;
-                    selectors.push(item.selectorText);
+                                webFont.chars += element.textContent;
+                            });
+                    }
+
+                    webFont.selectors.push(cssStyleRule.selectorText);
+                } else if (that.hasContent(cssStyleRule)) {
+                    pseudoCssStyleRules.push(cssStyleRule);
                 }
+
             });
 
-            return new WebFont(name, files, chars, selectors);
+            return webFont;
         });
+
+
+        // 查找伪元素的 content 值
+        webFonts.forEach(function(fontFace) {
+            fontFace._elements.forEach(function(element) {
+                fontFace.chars += that.getPseudoElementContent(pseudoCssStyleRules, element);
+            });
+        });
+
+
+        return webFonts;
     },
 
 
 
     /**
-     * 获取当前节点伪元素 content 属性值
+     * 获取当前节点伪元素 content 属性值集合
      * @param   {Array<CSSStyleRule>}
      * @param   {Elment}
      * @return  {String}
@@ -114,16 +98,29 @@ FontSpider.prototype = {
         }
 
         return cssStyleRules.map(function(cssStyleRule) {
-            var elements = this.matcheElements(cssStyleRule, true);
+            var elements = this.matcheElements(cssStyleRule.selectorText, true);
 
             if (hasOne(element, elements)) {
-                return cssStyleRule.style.content.replace(RE_QUOTATION, '');
+                return that.parsePseudoElementContent(cssStyleRule);
             }
 
             return '';
         }, this).join('');
 
 
+    },
+
+
+
+    /**
+     * 解析伪元素 content 属性值
+     * @param   {CSSStyleRule}
+     * @return  {String}
+     */
+    parsePseudoElementContent: function(cssStyleRule) {
+        var RE_QUOTATION = /^["']|["']$/g;
+        // TODO 支持 content 其他规则
+        return cssStyleRule.style.content.replace(RE_QUOTATION, '');
     },
 
 
@@ -143,17 +140,17 @@ FontSpider.prototype = {
 
 
     /**
-     * 查找与样式规则相匹配的元素列表
-     * @param   {CSSStyleRule}
+     * 查找元素列表
+     * @param   {String}
+     * @param   {Boolean}       是否匹配伪元素的父元素
      * @return  {Array}         元素列表
      */
-    matcheElements: function(cssStyleRule, isPseudo) {
+    matcheElements: function(selectorText, matchePseudoParent) {
         var document = this.document;
         var RE_DPSEUDOS = /\:(link|visited|target|active|focus|hover|checked|disabled|enabled|selected|lang\(([-\w]{2,})\)|not\(([^()]*|.*)\))?(.*)/i;
-        var selectorText = cssStyleRule.selectorText;
         var selector = selectorText;
 
-        if (isPseudo) {
+        if (matchePseudoParent) {
             selector = selector.replace(/\:+(before|after)$/, '') || '*';
         }
 
@@ -166,87 +163,6 @@ FontSpider.prototype = {
         }
     },
 
-
-
-    /**
-     * 解析 font-family 属性值为数组
-     * @param   {String}
-     * @return  {Array<String>}
-     */
-    parseFontfamily: function(fontFamily) {
-        // TODO test
-        var list = fontFamily
-            .replace(/^\s*["']?|["']?\s*$|["']?\s*(,)\s*["']?/g, '$1')
-            .split(',');
-        return list;
-    },
-
-
-
-    /**
-     * 解析 @font-face src 值
-     * @param   {String}    src 的属性值
-     * @param   {String}    基础路径
-     * @return  {Array<String>}
-     */
-    parseFontFaceSrc: function(value, baseURI) {
-        var list = [];
-        var src;
-
-        var RE_FONT_URL = /url\(["']?(.*?)["']?\)(?:\s*format\(["']?(.*?)["']?\))?/ig;
-
-        RE_FONT_URL.lastIndex = 0;
-
-        while ((src = RE_FONT_URL.exec(value)) !== null) {
-            list.push(new FontFile(baseURI, src[1], src[2]));
-        }
-
-        return list;
-    },
-
-
-    /**
-     * 判断是否存在 @font-face 定义的字体
-     * @param   {CSSStyleRule}
-     * @param   {Array<CSSFontFaceRules>}
-     * @return  {Boolean}
-     */
-    hasFontFace: function(cssStyleRule, cssFontFaceRules) {
-        return !!this.matcheFontFaces(cssStyleRule, cssFontFaceRules).length;
-    },
-
-
-    /**
-     * 获取被当前 CSS 规则使用的 @font-face 规则
-     * TODO    https://www.w3.org/html/ig/zh/wiki/CSS3字体模块#.E5.AD.97.E4.BD.93.E5.8C.B9.E9.85.8D.E7.AE.97.E6.B3.95
-     * @param   {CSSStyleRule}
-     * @param   {Array<CSSFontFaceRule>}
-     * @return  {Array<CSSFontFaceRule>}
-     */
-    matcheFontFaces: function(cssStyleRule, cssFontFaceRules) {
-
-        var style = cssStyleRule.style;
-        var fontFamily = style['font-family'];
-        var list = [];
-
-        if (!fontFamily) {
-            return list;
-        }
-
-        var fontFamilys = this.parseFontfamily(fontFamily);
-
-
-        for (var i = 0, len = cssFontFaceRules.length; i < len; i++) {
-            var fontFaceName = cssFontFaceRules[i].style['font-family'];
-            fontFaceName = fontFaceName.replace(RE_QUOTATION, '');
-
-            if (fontFamilys.indexOf(fontFaceName) !== -1) {
-                list.push(cssFontFaceRules[i]);
-            }
-        }
-
-        return list;
-    },
 
 
     /**
@@ -264,23 +180,6 @@ FontSpider.prototype = {
         } else {
             return false;
         }
-    },
-
-
-
-    /**
-     * 遍历每一条自定义字体规则
-     * @param   {Function}
-     */
-    eachCssFontFaceRule: function(callback) {
-        var window = this.window;
-        var CSSFontFaceRule = window.CSSFontFaceRule;
-
-        this.eachCssRuleList(function(cssRule) {
-            if (cssRule instanceof CSSFontFaceRule) {
-                callback(cssRule);
-            }
-        });
     },
 
 
@@ -344,70 +243,14 @@ FontSpider.prototype = {
 };
 
 
-/**
- * WebFont 描述类
- * @param   {String}            字体名
- * @param   {Array<FontFile>}   路径列表
- * @param   {String}            被网页应用的字符
- * @param   {Array<String>}     应用的 CSS 选择器
- */
-function WebFont(name, files, chars, selectors) {
-    this.id = crypto
-        .createHash('md5')
-        .update(files.join(','))
-        .digest('hex');
 
-    this.name = name;
-    this.files = files;
+FontSpider.WebFont = function WebFont(fontFace, chars, selectors) {
+    Object.keys(fontFace).forEach(function(key) {
+        this[key] = fontFace[key];
+    }, this);
     this.chars = chars;
     this.selectors = selectors;
-
-    // TODO 粗细、风格
-}
-
-
-/**
- * font-face 路径与字体类型描述信息类
- * @param   {String}            基础路径
- * @param   {String}            源路径
- * @param   {String}            类型
- */
-function FontFile(baseURI, source, format) {
-
-    if (baseURI) {
-        source = url.resolve(baseURI, source);
-    }
-
-    if (!format) {
-
-        switch (path.dirname(source.replace(/[\?#].*$/, '')).toLowerCase()) {
-            case '.eot':
-                format = 'embedded-opentype';
-                break;
-            case '.woff':
-                format = 'woff';
-                break;
-            case '.ttf':
-                format = 'truetype';
-                break;
-            case '.svg':
-                format = 'svg';
-                break;
-        }
-    } else {
-        format = format.toLowerCase();
-    }
-
-    this.source = source;
-    this.format = format;
-}
-
-FontFile.prototype.toString = function() {
-    return this.source;
 };
-
-
-
 
 
 
@@ -448,7 +291,10 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
                 indexs[id] = list.length;
                 list.push(webFont);
             }
+
+            delete webFont._elements;
         });
+
 
 
         // 处理 chars 字段
@@ -477,12 +323,12 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
             callback(null, list);
         });
 
-
         return list;
     }, function(errors) {
         process.nextTick(function() {
             callback(errors);
         });
+        return errors;
     });
 
 

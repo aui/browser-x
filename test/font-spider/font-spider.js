@@ -52,7 +52,7 @@ FontSpider.prototype = {
 
                     if (that.hasContent(cssStyleRule)) {
                         // 伪元素直接拿 content 字段
-                        webFont.chars += that.parseContent(cssStyleRule);
+                        webFont.chars += that.parsePseudoContent(cssStyleRule);
                     } else {
 
                         // 通过选择器查找元素拥有的文本节点
@@ -67,17 +67,6 @@ FontSpider.prototype = {
                 } else if (that.hasContent(cssStyleRule)) {
                     // 暂存伪元素，以便进一步分析
                     pseudoCssStyleRules.push(cssStyleRule);
-
-                    // var content = that.parseContent(cssStyleRule);
-                    // that.getElements(cssStyleRule, true).forEach(function(element) {
-
-                    //     if (pseudoElements.indexOf(element) === -1) {
-                    //         pseudoElements.push(element);
-                    //         element[PSEUDO_KEY] = '';
-                    //     }
-
-                    //     element[PSEUDO_KEY] += content;
-                    // });
                 }
 
             });
@@ -86,25 +75,15 @@ FontSpider.prototype = {
 
 
         console.time('伪元素分析');
-        // 分析伪元素的父元素是否应用了 webFont，并加入 chars
-        // pseudoCssStyleRules.forEach(function(cssStyleRule) {
-        //     webFonts.forEach(function(webFont, index) {
-        //         elements[index].forEach(function(element) {
-        //             if (that.containsPseudo(element, cssStyleRule)) {
-        //                 webFont.selectors.push(cssStyleRule.selectorText);
-        //                 webFont.chars += that.parseContent(cssStyleRule);
-        //             }
-        //         });
-        //     });
-        // });
 
+        // 分析伪元素所继承的字体
         pseudoCssStyleRules.forEach(function(cssStyleRule) {
             var pseudoElements = that.getElements(cssStyleRule, true);
             pseudoElements.forEach(function(pseudoElement) {
                 webFonts.forEach(function(webFont, index) {
                     if (containsPseudo(elements[index], pseudoElement)) {
                         var selector = cssStyleRule.selectorText;
-                        var char = that.parseContent(cssStyleRule);
+                        var char = that.parsePseudoContent(cssStyleRule);
                         webFont.selectors.push(selector);
                         webFont.chars += char;
                     }
@@ -112,13 +91,7 @@ FontSpider.prototype = {
             });
 
         });
-        // for (var i = 0, e = pseudoElements.length; i < e; i++) {
-        //     for (var n = 0, l = elements.length; n < l; n++) {
-        //         if (containsPseudo(elements[n], pseudoElements[i])) {
-        //             webFonts[n].chars += pseudoElements[i][PSEUDO_KEY];
-        //         }
-        //     }
-        // }
+
 
 
         function containsPseudo(elements, element) {
@@ -184,25 +157,20 @@ FontSpider.prototype = {
      * @param   {CSSStyleRule}
      * @return  {String}
      */
-    parseContent: function(cssStyleRule) {
-        var RE_QUOTATION = /^["']|["']$/g;
+    parsePseudoContent: function(cssStyleRule) {
 
         var content = cssStyleRule.style.content;
 
-        // TODO 支持 content 其他规则
-        content = content.replace(RE_QUOTATION, '');
+        // TODO 支持 content 所有规则，如属性描述符
+        if (/^("[^"]*?"|'[^']*?')$/.test(content)) {
 
-        // 这里很容易出问题！！！！
-        // TODO browser bug: CSOOM 获取的 unicode 字符没有被编码
-        function fixEncoding(string) {
-            string = JSON.stringify(string).replace(/\\\\(.{4})/g, '\\u$1');
-            string = JSON.parse('{"string": ' + string + '}').string;
-            return string;
+            content = content.replace(/^["']|["']$/g, '');
+
+            return content;
+        } else {
+            return '';
         }
 
-        content = fixEncoding(content);
-
-        return content;
     },
 
 
@@ -328,6 +296,7 @@ FontSpider.prototype = {
     }
 
 };
+
 
 
 module.exports = FontSpider;

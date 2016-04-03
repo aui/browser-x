@@ -13,9 +13,9 @@ function FontSpider(htmlFile, adapter) {
 FontSpider.prototype = {
 
     constructor: FontSpider,
-
     window: null,
     document: null,
+
 
     parse: function(window) {
 
@@ -26,9 +26,7 @@ FontSpider.prototype = {
 
         var webFonts = [];
         var elements = []; //Array<Array>
-        //var pseudoElements = [];
         var pseudoCssStyleRules = [];
-        //var PSEUDO_KEY = '_PSEUDO_KEY';
 
         console.time('找到fontFace');
         // 找到 fontFace
@@ -75,7 +73,6 @@ FontSpider.prototype = {
 
 
         console.time('伪元素分析');
-
         // 分析伪元素所继承的字体
         pseudoCssStyleRules.forEach(function(cssStyleRule) {
             var pseudoElements = that.getElements(cssStyleRule, true);
@@ -91,11 +88,10 @@ FontSpider.prototype = {
             });
 
         });
-
+        console.timeEnd('伪元素分析');
 
 
         function containsPseudo(elements, element) {
-
             if (!elements.length) {
                 return false;
             }
@@ -109,45 +105,13 @@ FontSpider.prototype = {
 
             return false;
         }
-        console.timeEnd('伪元素分析');
+
 
 
         elements = null;
         pseudoCssStyleRules = null;
 
-
-
         return webFonts;
-    },
-
-
-
-    /**
-     * 判断当前元素是否包含伪元素规则
-     * @param   {Elment}
-     * @param   {CSSStyleRule}
-     * @return  {Boolean}
-     */
-    containsPseudo: function(element, cssStyleRule) {
-        function contains(container, element) {
-            while ((element = element.parentNode) && element.nodeType === 1) {
-                if (element === container) return true;
-            }
-            return false;
-        }
-
-        function match(container, elements) {
-            for (var i = 0, len = elements.length; i < len; i++) {
-                if (container === elements[i] || contains(container, elements[i])) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        var elements = this.getElements(cssStyleRule, true);
-
-        return match(element, elements);
     },
 
 
@@ -158,7 +122,6 @@ FontSpider.prototype = {
      * @return  {String}
      */
     parsePseudoContent: function(cssStyleRule) {
-
         var content = cssStyleRule.style.content;
 
         // TODO 支持 content 所有规则，如属性描述符
@@ -236,6 +199,7 @@ FontSpider.prototype = {
     },
 
 
+
     /**
      * 遍历每一条选择器的规则
      * @param   {Function}
@@ -251,6 +215,7 @@ FontSpider.prototype = {
             }
         });
     },
+
 
 
     /**

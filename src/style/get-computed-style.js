@@ -6,6 +6,12 @@ var inherit = require('./config/inherit.json');
 // TODO 计算值
 module.exports = function getComputedStyle(node, pseudo) {
 
+    var cacheKey = '_computedStyle::' + pseudo;
+
+    if (node[cacheKey]) {
+        return node[cacheKey];
+    }
+
     var currentStyle = cascade(node, pseudo);
     var parentNode = pseudo ? node : node.parentNode;
     var INHERIT = 'inherit';
@@ -43,6 +49,8 @@ module.exports = function getComputedStyle(node, pseudo) {
         });
     }
 
+
+    node[cacheKey] = currentStyle;
 
     return currentStyle;
 };

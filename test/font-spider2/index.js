@@ -1,40 +1,6 @@
 'use strict';
-
-var Adapter = require('./adapter');
 var FontSpider = require('./font-spider');
-
-
-// 扁平化二维数组
-function reduce(array) {
-    var ret = [];
-
-    array.forEach(function(item) {
-        ret.push.apply(ret, item);
-    });
-
-    return ret;
-}
-
-
-
-function sort(a, b) {
-    return a.charCodeAt() - b.charCodeAt();
-}
-
-
-
-function unique(array) {
-    var ret = [];
-
-    array.forEach(function(val) {
-        if (ret.indexOf(val) === -1) {
-            ret.push(val);
-        }
-    });
-
-    return ret;
-}
-
+var Adapter = require('./adapter');
 
 module.exports = function createFontSpider(htmlFiles, options, callback) {
 
@@ -59,7 +25,7 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
         var indexs = {};
 
 
-        // 合并相同 font-face
+        // 合并相同 font-face 的查询数据
         webFonts.forEach(function(webFont) {
             var id = webFont.id;
             if (typeof indexs[id] === 'number') {
@@ -73,10 +39,15 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
                 indexs[id] = list.length;
                 list.push(webFont);
             }
+
+            delete webFont._elements;
         });
 
 
+
+        // 处理 chars 字段
         list.forEach(function(font) {
+
             var chars = font.chars.split('');
 
             // 对字符进行除重操作
@@ -93,7 +64,6 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
             chars = chars.join('').replace(/[\n\r\t]/g, '');
 
             font.chars = chars;
-            font.selectors = unique(font.selectors);
         });
 
 
@@ -108,5 +78,36 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
         });
         return Promise.reject(errors);
     });
+
+
+
+    // 扁平化二维数组
+    function reduce(array) {
+        var ret = [];
+
+        array.forEach(function(item) {
+            ret.push.apply(ret, item);
+        });
+
+        return ret;
+    }
+
+
+    function sort(a, b) {
+        return a.charCodeAt() - b.charCodeAt();
+    }
+
+
+    function unique(array) {
+        var ret = [];
+
+        array.forEach(function(val) {
+            if (ret.indexOf(val) === -1) {
+                ret.push(val);
+            }
+        });
+
+        return ret;
+    }
 
 };

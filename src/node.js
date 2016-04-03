@@ -122,8 +122,29 @@ Node.prototype = Object.create(Object.prototype, {
 
 Node.prototype.constructor = Node;
 
-Node.prototype.insertBefore = function() {
+// TODO test
+Node.prototype.insertBefore = function(newChild) {
     throw new Error('not yet implemented');
+
+    // if (newChild._parent) {
+    //     newChild._parent.removeChild(newChild);
+    // }
+
+    // newChild._parent = this;
+
+    // if (newChild._previous = this._first) {
+    //     this._first._previous = newChild;
+    // }
+
+    // if (!this._last) {
+    //     this._last = newChild;
+    // }
+
+    // this._first = newChild;
+
+    // Array.prototype.push.call(this.childNodes, newChild);
+
+    // return newChild;
 };
 
 Node.prototype.removeChild = function(oldChild) {
@@ -132,7 +153,7 @@ Node.prototype.removeChild = function(oldChild) {
         throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR);
     }
 
-    // TODO 鎬ц兘浼樺寲
+    // TODO 性能优化
     Array.prototype.splice.call(this.childNodes, Array.prototype.indexOf.call(oldChild), 1);
 
     if (oldChild._previous) {
@@ -170,7 +191,7 @@ Node.prototype.appendChild = function(newChild) {
 
     this._last = newChild;
 
-    // TODO 鎬ц兘浼樺寲
+    // TODO 性能优化
     Array.prototype.push.call(this.childNodes, newChild);
 
     return newChild;

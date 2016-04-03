@@ -4,6 +4,7 @@
   "description": "A partial implementation of the W3C DOM API on top of an HTML5 parser and serializer.",
   "main": "index.js",
   "dependencies": {
+    "css-mediaquery": "^0.1.2",
     "cssom": "^0.3.1",
     "cssstyle": "^0.2.34",
     "nwmatcher": "^1.3.7",

@@ -8,6 +8,10 @@ function Window() {
     this.document = null;
     this.onerror = null;
     this.getComputedStyle = getComputedStyle;
+    //
+    this.screen = {
+        width: 1440
+    };
 
     this.CSSStyleDeclaration= cssom.CSSStyleDeclaration;
     this.CSSRule= cssom.CSSRule;

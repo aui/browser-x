@@ -3,12 +3,14 @@
 var path = require('path');
 var url = require('url');
 var crypto = require('crypto');
-var cssFontParser = require('css-font-parser');
-
 
 /**
  * FontFace 描述类
- * @param   {object}
+ * @param   {String}
+ * @param   {String}
+ * @param   {Array<FontFile>}
+ * @param   {String}
+ * @param   {String}
  */
 function FontFace(options) {
     this.id = options.id;
@@ -17,6 +19,7 @@ function FontFace(options) {
     this.stretch = options.stretch;
     this.style = options.style;
     this.weight = options.weight;
+    this.chars = options.chars;
 }
 
 
@@ -50,44 +53,25 @@ FontFace.parse = function parseFontFace(cssFontFaceRule) {
         files: files,
         stretch: stretch,
         style: style,
-        weight: weight
+        weight: weight,
+        chars: ''
     });
 };
 
 
-
 /**
- * 匹配 CSS 规则
+ * 匹配字体
  * @see https://www.w3.org/html/ig/zh/wiki/CSS3字体模块#.E5.AD.97.E4.BD.93.E5.8C.B9.E9.85.8D.E7.AE.97.E6.B3.95
- * @param   {CSSStyleRule}
+ * @param   {Element}
  * @return  {Boolean}
  */
-FontFace.prototype.match = function(cssStyleRule) {
+FontFace.prototype.matche = function(element) {
 
-    var style = cssStyleRule.style;
-    var fontFamilys = [];
+    var window = element.ownerDocument.defaultView;
+    var getComputedStyle = window.getComputedStyle;
+    var style = getComputedStyle(element);
+    var fontFamilys = parseFontfamily(style.fontFamily);
 
-    if (!style['font-family'] && !style.font) {
-        return false;
-    }
-
-    for (var i = 0, key; i < style.length; i++) {
-        key = style[i];
-
-        if (key === 'font-family') {
-            fontFamilys = parseFontfamily(style[key]);
-        } else if (key === 'font') {
-            var s = cssFontParser(style[key]);
-            if (s) {
-                var f = s['font-family'];
-                if (Array.isArray(f)) {
-                    fontFamilys = f;
-                }
-            }
-        }
-    }
-
-    // 暂时只能做到名称匹配，会产生冗余
     // TODO 完善匹配算法 fontFamily | fontStretch | fontStyle | fontWeight
     if (fontFamilys.indexOf(this.family) !== -1) {
         return true;

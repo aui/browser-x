@@ -1,0 +1,18 @@
+@import url(./style2.css);
+@font-face {
+    src: url('../font/normal.woff') format('woff');
+    font-family: 'test';
+    font-variant: normal;
+    font-stretch: normal;
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    src: url('../font/variant-small-caps.woff') format('woff');
+    font-family: 'test';
+    font-variant: small-caps;
+    font-stretch: normal;
+    font-weight: normal;
+    font-style: normal;
+}

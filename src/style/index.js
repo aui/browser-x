@@ -1,9 +1,9 @@
 'use strict';
 var cssom = require('cssom');
-var cssstyle = require('cssstyle');
+//var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
 
 var CSSOM = {
-    CSSStyleDeclaration: cssstyle.CSSStyleDeclaration,
+    CSSStyleDeclaration: cssom.CSSStyleDeclaration,
     CSSRule: cssom.CSSRule,
     CSSStyleRule: cssom.CSSStyleRule,
     MediaList: cssom.MediaList,

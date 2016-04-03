@@ -1,20 +1,13 @@
 'use strict';
 
 var cssom = require('cssom');
+var cssMediaQuery = require('css-mediaquery');
 var CSSStyleRule = cssom.CSSStyleRule;
 var CSSImportRule = cssom.CSSImportRule;
 var CSSMediaRule = cssom.CSSMediaRule;
 
-function styleSheetListFor(styleSheetList, callback) {
-    for (var i = 0; i < styleSheetList.length; i++) {
-        var cssStyleSheet = styleSheetList[i];
-        var cssRuleList = cssStyleSheet.cssRules || [];
-        cssRuleListFor(cssRuleList, callback);
-    }
-}
 
-
-function cssRuleListFor(cssRuleList, callback) {
+function cssRuleListFor(cssRuleList, screenWidth, callback) {
     for (var n = 0; n < cssRuleList.length; n++) {
         var cssRule = cssRuleList[n];
 
@@ -23,10 +16,17 @@ function cssRuleListFor(cssRuleList, callback) {
         } else if (cssRule instanceof CSSImportRule) {
 
             var cssStyleSheet = cssRule.styleSheet;
-            cssRuleListFor(cssStyleSheet.cssRules || [], callback);
+            cssRuleListFor(cssStyleSheet.cssRules || [], screenWidth, callback);
 
         } else if (cssRule instanceof CSSMediaRule) {
-            // TODO
+            Array.prototype.forEach.call(cssRule.media, function(media) {
+                if (cssMediaQuery.match(media, {
+                    type : 'screen',
+                    width: screenWidth + 'px'
+                })) {
+                    cssRuleListFor(cssRule.cssRules || [], screenWidth, callback);
+                }
+            });
         }
 
     }
@@ -34,5 +34,14 @@ function cssRuleListFor(cssRuleList, callback) {
 
 
 module.exports = function eachCssStyleRule(document, callback) {
-    styleSheetListFor(document.styleSheets, callback);
+    var window = document.defaultView;
+    var styleSheetList = document.styleSheets;
+    var screenWidth = window.screen.width;
+
+    for (var i = 0; i < styleSheetList.length; i++) {
+        var cssStyleSheet = styleSheetList[i];
+        var cssRuleList = cssStyleSheet.cssRules || [];
+        cssRuleListFor(cssRuleList, screenWidth, callback);
+    }
 };
+

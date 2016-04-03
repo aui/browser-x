@@ -87,6 +87,7 @@ Document.prototype = Object.create(Node.prototype, {
             if (!this._styleSheets) {
                 this._styleSheets = new StyleSheetList();
 
+                // TODO test media
                 var nodeList = this.querySelectorAll('style,link[rel=stylesheet]:not([disabled])');
 
                 for (var i = 0; i < nodeList.length; i++) {

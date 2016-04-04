@@ -7,6 +7,7 @@ var getComputedStyle = require('./style/get-computed-style');
 function Window() {
     this.document = null;
     this.onerror = null;
+    this.onload = null;
     this.getComputedStyle = getComputedStyle;
 
     this.CSSStyleDeclaration= cssom.CSSStyleDeclaration;

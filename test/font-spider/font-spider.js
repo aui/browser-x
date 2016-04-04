@@ -17,7 +17,6 @@ FontSpider.prototype = {
     window: null,
     document: null,
 
-    // TODO 查找内联样式
     parse: function(window) {
 
         var that = this;

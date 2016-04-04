@@ -186,6 +186,7 @@ npm test
 1. 不支持 XML 解析 
 2. 所有的 DOM 属性均只读
 3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的值，暂时没有值进行转换（例如 em \> px）
+4. document.styleSheets 可以支持跨域访问 CSSOM
 
 ## 为什么使用 browser-x
 

@@ -90,11 +90,18 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
             chars = chars.join('').replace(/[\n\r\t]/g, '');
 
             font.chars = chars;
+
+            // 选择器去重
             font.selectors = unique(font.selectors);
 
+            // 转换路径
             font.files = font.files.filter(function(file) {
                 var ignore = !adapter.resourceIgnore(file.source);
-                file.source = adapter.resourceMap(file.source);
+
+                if (!ignore) {
+                    file.source = adapter.resourceMap(file.source);
+                }
+
                 return ignore;
             });
         });

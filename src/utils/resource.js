@@ -29,7 +29,7 @@ Resource.prototype = {
     get: function(file) {
 
 
-        file = this.normalize(file);
+
 
         this.number ++;
 
@@ -38,11 +38,12 @@ Resource.prototype = {
         var resourceCache = adapter.resourceCache();
         var that = this;
 
-        file = adapter.resourceMap(file);
-
+        // ignore > map > normalize
         if (adapter.resourceIgnore(file)) {
             return Promise.resolve('');
         }
+        file = adapter.resourceMap(file);
+        file = this.normalize(file);
 
         if (this.number > this.adapter.resourceMaxNumber) {
             var errors = new Error('Exceed the maximum load limit on the number of resources');

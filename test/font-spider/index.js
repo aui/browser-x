@@ -93,7 +93,7 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
             font.selectors = unique(font.selectors);
 
             font.files = font.files.filter(function(file) {
-                var ignore = adapter.resourceIgnore(file.source);
+                var ignore = !adapter.resourceIgnore(file.source);
                 file.source = adapter.resourceMap(file.source);
                 return ignore;
             });

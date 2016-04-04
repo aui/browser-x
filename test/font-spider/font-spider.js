@@ -30,16 +30,13 @@ FontSpider.prototype = {
         var pseudoCssStyleRules = [];
         var inlineStyleElements = document.querySelectorAll('[style*="font"]');
 
-        console.time('找到fontFace');
         // 找到 fontFace
         this.eachCssFontFaceRule(function(cssRule) {
             var webFont = WebFont.parse(cssRule);
             webFonts.push(webFont);
         });
-        console.timeEnd('找到fontFace');
 
 
-        console.time('分析依赖');
         webFonts.forEach(function(webFont, index) {
             elements[index] = [];
 
@@ -88,10 +85,7 @@ FontSpider.prototype = {
         });
 
 
-        console.timeEnd('分析依赖');
 
-
-        console.time('伪元素分析');
         // 分析伪元素所继承的字体
         pseudoCssStyleRules.forEach(function(cssStyleRule) {
             var pseudoElements = that.getElements(cssStyleRule.selectorText, true);
@@ -107,7 +101,8 @@ FontSpider.prototype = {
             });
 
         });
-        console.timeEnd('伪元素分析');
+
+
 
 
         function containsPseudo(elements, element) {

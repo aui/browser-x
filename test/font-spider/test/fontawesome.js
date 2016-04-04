@@ -3,7 +3,7 @@ var fontSpider = require('../');
 fontSpider('http://fontawesome.io/icons/', {
     loadCssFile: true,
     silent: false,
-    resourceTimeout: 5000,
+    resourceTimeout: 8000,
     resourceBeforeLoad: console.info
 }).then(function(data) {
     console.log(JSON.stringify(data, null, 4))

@@ -3,6 +3,7 @@
 var browser = require('../../');
 var Adapter = require('./adapter');
 var WebFont = require('./web-font');
+var utils = require('./utils');
 
 
 function FontSpider(htmlFile, adapter) {
@@ -54,7 +55,7 @@ FontSpider.prototype = {
                     } else {
 
                         // 通过选择器查找元素拥有的文本节点
-                        that.getElements(cssStyleRule).forEach(function(element) {
+                        that.getElements(cssStyleRule.selectorText).forEach(function(element) {
                             webFont.chars += element.textContent;
                             if (elements[index].indexOf(element) === -1) {
                                 elements[index].push(element);
@@ -75,7 +76,7 @@ FontSpider.prototype = {
         console.time('伪元素分析');
         // 分析伪元素所继承的字体
         pseudoCssStyleRules.forEach(function(cssStyleRule) {
-            var pseudoElements = that.getElements(cssStyleRule, true);
+            var pseudoElements = that.getElements(cssStyleRule.selectorText, true);
             pseudoElements.forEach(function(pseudoElement) {
                 webFonts.forEach(function(webFont, index) {
                     if (containsPseudo(elements[index], pseudoElement)) {
@@ -137,18 +138,30 @@ FontSpider.prototype = {
     },
 
 
-
     /**
-     * 查找元素列表
-     * @param   {CSSStyleRule}
+     * 根据选择器查找元素
+     * @param   {String}
      * @param   {Boolean}       是否匹配伪元素的父元素
      * @return  {Array}         元素列表
      */
-    getElements: function(cssStyleRule, matchPseudoParent) {
+    getElements: function(selector, matchPseudoParent) {
+        var that = this;
         var document = this.document;
-        var selectorText = cssStyleRule.selectorText;
         var RE_DPSEUDOS = /\:(link|visited|target|active|focus|hover|checked|disabled|enabled|selected|lang\(([-\w]{2,})\)|not\(([^()]*|.*)\))?(.*)/i;
-        var selector = selectorText;
+
+
+        // 将多个语句拆开进行查询，避免其中有失败导致所有规则失效
+        if (selector.indexOf(',') !== -1) {
+
+            var elements = [];
+            var selectors = utils.split(selector, ',');
+
+            selectors.forEach(function(selector) {
+                elements = elements.concat(that.getElements(selector, matchPseudoParent));
+            });
+
+            return elements;
+        }
 
         if (matchPseudoParent) {
             selector = selector.replace(/\:\:?(?:before|after)$/i, '') || '*';

@@ -66,9 +66,6 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
                 var item = list[indexs[id]];
                 item.chars += webFont.chars;
                 item.selectors = item.selectors.concat(webFont.selectors);
-                item.files = item.files.filter(function(file) {
-                    return adapter.resourceIgnore(file.source);
-                });
             } else {
                 indexs[id] = list.length;
                 list.push(webFont);
@@ -94,6 +91,12 @@ module.exports = function createFontSpider(htmlFiles, options, callback) {
 
             font.chars = chars;
             font.selectors = unique(font.selectors);
+
+            font.files = font.files.filter(function(file) {
+                var ignore = adapter.resourceIgnore(file.source);
+                file.source = adapter.resourceMap(file.source);
+                return ignore;
+            });
         });
 
 

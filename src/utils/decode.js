@@ -12,8 +12,9 @@ function decode(string, tag) {
 
     var newString = '';
     var len = string.length;
+    var on;
 
-    for (var i = 0, char, on; i < len; i++) {
+    for (var i = 0, char; i < len; i++) {
         char = string.charAt(i);
 
         if (on) {

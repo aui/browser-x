@@ -59,12 +59,11 @@ FontFace.parse = function parseFontFace(cssFontFaceRule) {
 /**
  * 匹配 CSS 规则
  * @see https://www.w3.org/html/ig/zh/wiki/CSS3字体模块#.E5.AD.97.E4.BD.93.E5.8C.B9.E9.85.8D.E7.AE.97.E6.B3.95
- * @param   {CSSStyleRule}
+ * @param   {CSSStyleDeclaration}
  * @return  {Boolean}
  */
-FontFace.prototype.match = function(cssStyleRule) {
+FontFace.prototype.match = function(style) {
 
-    var style = cssStyleRule.style;
     var fontFamilys = [];
 
     if (!style['font-family'] && !style.font) {

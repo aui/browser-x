@@ -34,5 +34,11 @@ describe('Utils', function() {
         it("#9", function() {
             assert.deepEqual(['.class', '[attr="\\""]', '.class2'], split('.class, [attr="\\""], .class2'));
         });
+        it("#10", function() {
+            assert.deepEqual(['.class', '.class2'], split('\n .class \n,\n   .class2'));
+        });
+        it("#11", function() {
+            assert.deepEqual(['.class', '[attr^="   "]', '.class2'], split('\n .class \n  ,  [attr^="   "],  \n   .class2'));
+        });
     });
 });

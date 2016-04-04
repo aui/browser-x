@@ -17,17 +17,19 @@ FontSpider.prototype = {
     window: null,
     document: null,
 
-
+    // TODO 查找内联样式
     parse: function(window) {
 
         var that = this;
+        var document = window.document;
 
         this.window = window;
-        this.document = window.document;
+        this.document = document;
 
         var webFonts = [];
         var elements = []; //Array<Array>
         var pseudoCssStyleRules = [];
+        var inlineStyleElements = document.querySelectorAll('[style*="font"]');
 
         console.time('找到fontFace');
         // 找到 fontFace
@@ -45,7 +47,7 @@ FontSpider.prototype = {
             that.eachCssStyleRule(function(cssStyleRule) {
 
                 // 如果当前规则包含已知的 webFont
-                if (webFont.match(cssStyleRule)) {
+                if (webFont.match(cssStyleRule.style)) {
 
                     webFont.selectors.push(cssStyleRule.selectorText);
 
@@ -70,6 +72,23 @@ FontSpider.prototype = {
 
             });
         });
+
+
+
+        // 行内样式
+        Array.prototype.forEach.call(inlineStyleElements, function(element) {
+            var style = element.style;
+            webFonts.forEach(function(webFont, index) {
+                if (webFont.match(style)) {
+                    webFont.chars += element.textContent;
+                    if (elements[index].indexOf(element) === -1) {
+                        elements[index].push(element);
+                    }
+                }
+            });
+        });
+
+
         console.timeEnd('分析依赖');
 
 
@@ -97,6 +116,7 @@ FontSpider.prototype = {
                 return false;
             }
 
+            // 向上查找比提高效率
             while (element) {
                 if (elements.indexOf(element) !== -1) {
                     return true;
@@ -139,9 +159,9 @@ FontSpider.prototype = {
 
 
     /**
-     * 根据选择器查找元素
+     * 根据选择器查找元素，支持伪类和伪元素
      * @param   {String}
-     * @param   {Boolean}       是否匹配伪元素的父元素
+     * @param   {Boolean}       是否支持伪元素
      * @return  {Array}         元素列表
      */
     getElements: function(selector, matchPseudoParent) {
@@ -163,11 +183,14 @@ FontSpider.prototype = {
             return elements;
         }
 
+        // 伪类
+        selector = selector.replace(RE_DPSEUDOS, '');
+
+        // 伪元素
         if (matchPseudoParent) {
             selector = selector.replace(/\:\:?(?:before|after)$/i, '') || '*';
         }
 
-        selector = selector.replace(RE_DPSEUDOS, '');
 
         try {
             return Array.prototype.slice.call(document.querySelectorAll(selector));

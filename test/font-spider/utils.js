@@ -10,8 +10,8 @@ module.exports = {
         var array = [];
         var len = string.length;
         var on = null;
-        var blankChar = ' ';
         var escapeChar = '\\';
+        var RE_BLANK = /[\s\n\r\t]/;
         var quotationChars = {
             '"': '"',
             "'": "'"
@@ -37,7 +37,7 @@ module.exports = {
                         array.push('');
                     }
 
-                    if (char !== blankChar) {
+                    if (!RE_BLANK.test(char)) {
                         array[array.length - 1] += char;
                     }
                 }

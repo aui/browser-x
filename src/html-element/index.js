@@ -14,7 +14,7 @@ var config = {
     'TEXTAREA': require('./html-text-area-element')
 };
 
-var CSSStyleDeclaration = require('../style').CSSStyleDeclaration;
+var CSSStyleDeclaration = require('cssstyle').CSSStyleDeclaration;
 
 
 
@@ -59,7 +59,7 @@ function createElementNS(document, namespaceURI, tagName) {
     } else {
         return new config['*'](document, tagName, namespaceURI);
     }
-};
+}
 
 
 module.exports = createElementNS;

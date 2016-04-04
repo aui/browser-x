@@ -96,6 +96,10 @@ describe('Document', function() {
         it('document.querySelectorAll("*")', function() {
             assert.equal(5, document.querySelectorAll("*").length);
         });
+
+        it('document.querySelectorAll("[charset*=\'UTF-8\']")', function() {
+            assert.equal(1, document.querySelectorAll("[charset*='UTF-8']").length);
+        });
     });
 
 });

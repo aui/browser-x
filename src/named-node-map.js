@@ -22,6 +22,8 @@ NamedNodeMap.prototype = {
         var name = node.nodeName;
         var index = this._index[name];
 
+        this[name] = node;
+
         if (typeof index === 'number') {
             var oldNode = this[index];
             this[index] = node;
@@ -38,6 +40,8 @@ NamedNodeMap.prototype = {
 
     removeNamedItem: function(name) {
         var index = this._index[name];
+
+        delete this[name];;
 
         if (typeof index === 'number') {
             var node = Array.prototype.splice.call(this, index, 1)[0];

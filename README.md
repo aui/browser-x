@@ -1,11 +1,19 @@
 # browser-x
 
-这是一个基于 NodeJS 简版浏览器实现。拥有完整的 CSS3 选择器支持以及核心 DOM 方法，并且能够解析样式，支持`window.getComputedStyle(element, pseudo)`方法。
+这是一个基于 NodeJS 实现的“浏览器”，它实现了 DOM 的一些基础 API 可供开发人员使用。你可以：
 
-* 快速的 CSS3 选择器引擎
-* DOM 树的属性均只读
+* 使用 CSS3 选择器来操作 DOM
+* 分析 CSS 在文档中的应用情况
 
-## browser()
+## 安装
+
+```shell
+npm install browser-x
+```
+
+## 接口
+
+`browser`(html, options, callback)
 
 ```javascript
 var browser = require('browser-x');
@@ -22,12 +30,12 @@ browser(html, {
     }
     var document = window.document;
     var element = document.querySelector('#banner h2');
-    var fontFamily = window.getComputedStyle(element).fontFamily;
+    var fontFamily = window.getComputedStyle(element, '::after').fontFamily;
     console.log(fontFamily);
 });
 ```
 
-## browser.open()
+`browser.open`(url, options, callback)
 
 ```javascript
 var browser = require('browser-x');
@@ -43,17 +51,147 @@ browser.open('http://font-spider.org', {
 });
 ```
 
-## 测试
+> browser() 与 browser.open() 均返回 `Promise` 对象
+
+## options
+
+```
+{
+    /**
+     * 文件基础路径
+     */
+    baseURI: 'about:blank',
+
+    /**
+     * 是否支持加载外部 CSS 文件
+     */
+    loadCssFile: false,
+
+    /**
+     * 解析时是否静默失败
+     * @type    {Boolean}
+     */
+    silent: true,
+
+    /**
+     * 请求超时限制
+     * @type    {Number}    毫秒
+     */
+    resourceTimeout: 5000,
+
+    /**
+     * 最大的文件加载数量限制
+     * @tyoe    {Number}    数量
+     */
+    resourceMaxNumber: 64,
+
+    /**
+     * 映射资源路径
+     * @param   {String}    旧文件地址
+     * @return  {String}    新文件地址
+     */
+    resourceMap: function(file) {
+        return file;
+    },
+
+    /**
+     * 忽略资源
+     * @param   {String}    文件地址
+     * @return  {Boolean}   如果返回`true`则忽略当当前文件的加载
+     */
+    resourceIgnore: function(file) {
+        return false;
+    },
+
+    /**
+     * 资源加载前的事件
+     * @param   {String}    文件地址
+     */
+    resourceBeforeLoad: function(file) {
+    },
+
+    /**
+     * 加载远程资源的自定义请求头
+     * @param   {String}    文件地址
+     * @return  {Object}
+     */
+    resourceRequestHeaders: function(file) {
+        return {
+            'accept-encoding': 'gzip,deflate'
+        };
+    }
+}
+```
+
+## 运行单元测试
 
 ```shell
 npm test
 ```
 
+## 支持的 DOM API
+
+* window.getComputedStyle()
+* window.CSSStyleDeclaration()
+* window.CSSRule()
+* window.CSSStyleRule()
+* window.MediaList()
+* window.CSSMediaRule()
+* window.CSSImportRule()
+* window.CSSFontFaceRule()
+* window.StyleSheet()
+* window.CSSStyleSheet()
+* window.CSSKeyframesRule()
+* window.CSSKeyframeRule()
+* window.MatcherList()
+* window.CSSDocumentRule()
+* window.CSSValue()
+* window.CSSValueExpression()
+* document.URL
+* document.baseURI
+* document.documentElement
+* document.head
+* document.body
+* document.title
+* document.styleSheets
+* document.getElementsByTagName()
+* document.getElementById()
+* document.querySelector()
+* document.querySelectorAll()
+* element.id
+* element.tagName
+* element.style
+* element.className
+* element.innerHTML
+* element.outerHTML
+* element.hasAttribute()
+* element.getAttribute()
+* element.querySelector()
+* element.querySelectorAll()
+* element.getElementsByTagName()
+* element.matches()
+* node.nodeName
+* node.nodeType
+* node.attributes
+* node.childNodes
+* node.parentNode
+* node.firstChild
+* node.lastChild
+* node.nextSibling
+* node.previousSibling
+* node.textContent
+
+## 注意事项
+
+1. 不支持 XML 解析 
+2. 所有的 DOM 属性均只读
+3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的值，暂时没有值进行转换（例如 em \> px）
+
 ## 为什么使用 browser-x
 
 browser-x 适合做这些事情：
 
-1. 实现爬虫
+1. 爬虫程序
 2. 分析元素的样式使用情况，例如和 CSS 相关的开发工具
 
-如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（CSS 非完整支持）。
+如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（它唯一没有做好的是样式解析）。

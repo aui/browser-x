@@ -53,7 +53,7 @@ Resource.prototype = {
 
         adapter.resourceBeforeLoad(file);
 
-        if (resourceCache[file]) {
+        if (resourceCache && resourceCache[file]) {
             resource = resourceCache[file];
             if (resource) {
                 return resource;
@@ -81,7 +81,10 @@ Resource.prototype = {
         });
 
 
-        resourceCache[file] = resource;
+        if (resourceCache) {
+            resourceCache[file] = resource;
+        }
+
         return resource;
     },
 

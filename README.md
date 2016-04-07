@@ -63,6 +63,11 @@ browser.open('http://font-spider.org', {
      */
     baseURI: 'about:blank',
 
+    /*
+     * HTML 文本
+     */
+    html: null,
+
     /**
      * 是否支持加载外部 CSS 文件
      */
@@ -78,7 +83,7 @@ browser.open('http://font-spider.org', {
      * 请求超时限制
      * @type    {Number}    毫秒
      */
-    resourceTimeout: 5000,
+    resourceTimeout: 8000,
 
     /**
      * 最大的文件加载数量限制

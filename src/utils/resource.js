@@ -27,7 +27,6 @@ Resource.prototype = {
      * @return  {Promise}
      */
     get: function(file) {
-
         this.number++;
 
         var resource;

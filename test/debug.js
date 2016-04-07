@@ -1,8 +1,9 @@
 var browser = require('../');
 var fs = require('fs');
 
-// var baseURI = __dirname + '/debug.html';
-// var html = fs.readFileSync(baseURI, 'utf8');
+var baseURI = __dirname + '/debug.html';
+var html = fs.readFileSync(baseURI);
+console.log(html.isBuffer)
 
 browser.open(__dirname + '/debug.html', {
     loadCssFile: false,

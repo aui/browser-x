@@ -8,10 +8,10 @@ function BrowserAdapter(options) {
         return options;
     }
 
-    Object.keys(options).forEach(function(key) {
+    for (var key in options) {
         var value = options[key];
         this[key] = value;
-    }, this);
+    }
 
     this._resourceCache = {};
 }
@@ -24,6 +24,11 @@ BrowserAdapter.prototype = {
      * 文件基础路径
      */
     baseURI: 'about:blank',
+
+    /*
+     * HTML 文本
+     */
+    html: null,
 
     /**
      * 是否支持加载外部 CSS 文件
@@ -40,7 +45,7 @@ BrowserAdapter.prototype = {
      * 请求超时限制
      * @type    {Number}    毫秒
      */
-    resourceTimeout: 5000,
+    resourceTimeout: 8000,
 
     /**
      * 最大的文件加载数量限制

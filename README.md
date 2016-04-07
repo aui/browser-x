@@ -13,17 +13,18 @@ npm install browser-x
 
 ## 接口
 
-`browser`(html, options, callback)
+### browser(options, callback)
 
 ```javascript
 var browser = require('browser-x');
 
 var baseURI = __dirname + '/debug.html';
 var html = fs.readFileSync(baseURI, 'utf8');
-browser(html, {
+browser({
+    html: html,
     baseURI: baseURI,
     loadCssFile: true,
-    silent: true
+    silent: false
 }, function (errors, window) {
     if (errors) {
         throw errors;
@@ -35,14 +36,14 @@ browser(html, {
 });
 ```
 
-`browser.open`(url, options, callback)
+### browser.open(url, options, callback)
 
 ```javascript
 var browser = require('browser-x');
 
 browser.open('http://font-spider.org', {
     loadCssFile: true,
-    silent: true
+    silent: false
 }, function (errors, window) {
     if (errors) {
         throw errors;
@@ -51,7 +52,7 @@ browser.open('http://font-spider.org', {
 });
 ```
 
-> browser() 与 browser.open() 均返回 `Promise` 对象
+> browser() 与 browser.open() 均返回`Promise`对象
 
 ## options
 
@@ -183,10 +184,10 @@ npm test
 
 ## 注意事项
 
-1. 不支持 XML 解析 
-2. 所有的 DOM 属性均只读
-3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的值，暂时没有值进行转换（例如 em \> px）
-4. document.styleSheets 可以支持跨域访问 CSSOM
+1. 不支持 XML 文档解析 
+2. 所有的 DOM 属性均为只读
+3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的原始值或继承属性，但没有进行计算输出（例如 em \> px）
+4. document.styleSheets 在浏览器中无法跨域访问 CSSOM，browser-x 没有做此限制
 
 ## 为什么使用 browser-x
 

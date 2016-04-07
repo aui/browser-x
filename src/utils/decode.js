@@ -2,37 +2,39 @@
 
 
 /**
- * UTF8 字符串解码
+ * unicode 字符串解码
+ * @see http://andyyou.github.io/javascript/2015/05/21/js-unicode-issue.html
  * @param   {String}
- * @param   {String}    编码开始标记，默认`\`
+ * @param   {String}    编码开始标记，默认`\u`
  */
 function decode(string, tag) {
 
-    tag = tag || '\\';
+    tag = tag || '\\u';
 
     var newString = '';
-    var len = string.length;
-    var on;
-
-    for (var i = 0, char; i < len; i++) {
-        char = string.charAt(i);
-
-        if (on) {
+    var open = false;
+    var char, charCode;
+    var index = -1;
+    var length = string.length;
+    while (++index < length) {
+        char = string.charAt(index);
+        charCode = char.charCodeAt(0);
+        if (open) {
             if (char === tag) {
                 newString += tag;
             } else {
-                var hex = parseInt(string.substr(i, 4), 16);
+                var hex = parseInt(string.substr(index, 4), 16);
                 if (isNaN(hex)) {
                     newString += char;
                 } else {
                     newString += String.fromCharCode(hex);
-                    i += 3;
+                    index += 3;
                 }
             }
-            on = false;
+            open = false;
         } else {
             if (char === tag) {
-                on = true;
+                open = true;
             } else {
                 newString += char;
             }
@@ -40,6 +42,8 @@ function decode(string, tag) {
     }
 
     return newString;
+
 }
+
 
 module.exports = decode;

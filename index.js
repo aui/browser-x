@@ -6,21 +6,18 @@ var Resource = require('./src/utils/resource');
 var ParserAdapter = require('./src/adapters/parser-adapter');
 var BrowserAdapter = require('./src/adapters/browser-adapter');
 var loadCssFiles = require('./src/style/load-css-files');
-var Window = require('./src/window');
 
 
 
 /**
- * @param   {String}    HTML
- * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
+ * @param   {Object}    选项 @see ./src/adapters/browser-adapter
  * @param   {Function}  回调函数（可选）
  * @param   {Promise}
  */
-function browser(html, options, callback) {
+function browser(options, callback) {
     callback = callback || function() {};
-
     return new Promise(function(resolve, reject) {
-        var window = browser.sync(html, options);
+        var window = browser.sync(options.html, options);
         window.onload = function() {
             resolve(window);
             callback(null, window);
@@ -43,13 +40,14 @@ browser.open = function(url, options, callback) {
     options = new BrowserAdapter(options);
     options.baseURI = url;
     return (new Resource(options)).get(url).then(function(html) {
-        return browser(html, options, callback);
+        options.html = html;
+        return browser(options, callback);
     });
 };
 
 
 /**
- * @param   {String}    HTML
+ * @param   {String, Buffer}    HTML
  * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
  * @param   {Window}
  */
@@ -59,18 +57,8 @@ browser.sync = function(html, options) {
         treeAdapter: new ParserAdapter(options)
     };
 
-
-    if (html.isBuffer && html.isBuffer() && html.path) {
-        options.baseURI = html.path;
-        html = html.toString();
-    }
-
-
-    var window = new Window();
     var document = parse5.parse(html, options.parserAdapter);
-
-    document.defaultView = window;
-    window.document = document;
+    var window = document.defaultView;
 
     Object.defineProperty(window, 'onload', {
         get: function() {
@@ -106,7 +94,6 @@ browser.sync = function(html, options) {
         }
     });
 
-    window._init();
     return window;
 };
 

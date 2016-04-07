@@ -28,10 +28,7 @@ Resource.prototype = {
      */
     get: function(file) {
 
-
-
-
-        this.number ++;
+        this.number++;
 
         var resource;
         var adapter = this.adapter;
@@ -111,7 +108,7 @@ Resource.prototype = {
         var that = this;
         var REDIRECTION_MAX = 3;
 
-        var done = function (errors, data) {
+        var done = function(errors, data) {
             clearTimeout(timeoutEventId);
             callback(errors, data);
         }
@@ -134,7 +131,7 @@ Resource.prototype = {
                 if (/3\d\d/.test(statusCode) && res.headers.location && number < REDIRECTION_MAX) {
                     clearTimeout(timeoutEventId);
                     var file = res.headers.location;
-                    number ++;
+                    number++;
                     that.loadRemoteFile(file, callback, number);
                     return;
                 } else if (!/2\d\d/.test(statusCode)) {

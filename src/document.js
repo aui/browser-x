@@ -10,11 +10,12 @@ var HTMLElement = require('./html-element');
 var Node = require('./node');
 var Text = require('./text');
 var StyleSheetList = require('./style-sheet-list');
+var Window = require('./window');
 
 
 function Document(options) {
     Node.call(this, this, '#document', null, Node.DOCUMENT_NODE);
-    this.defaultView = null;
+    this.defaultView = new Window(this);
     this._doctype = null;
     this._documentElement = null;
     this._styleSheets = null;

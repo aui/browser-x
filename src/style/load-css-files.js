@@ -35,7 +35,7 @@ function loadCssFiles(document, resource) {
                 // TODO 在真正的浏览器中跨域，cssStyleSheet.cssRules 会等于 null
                 styleSheets[index] = cssStyleSheet;
 
-                return loadImportFile(baseURI, cssStyleSheet);
+                return loadImportFile(href, cssStyleSheet);
             }, onerror));
         }
     });

@@ -5,10 +5,10 @@ var eachCssStyleRule = require('../../../src/style/each-css-style-rule');
 var assert = require('assert');
 
 describe('css3-compat', function() {
-    var baseURI = __dirname + '/css3-compat.html';
-    var html = fs.readFileSync(baseURI, 'utf8');
+    var url = __dirname + '/css3-compat.html';
+    var html = fs.readFileSync(url, 'utf8');
     var window = browser.sync(html, {
-        baseURI: baseURI,
+        url: url,
         loadCssFile: false
     });
 

@@ -9,11 +9,11 @@ describe('getComputedStyle', function() {
     describe('getComputedStyle(node, pseudo)', function() {
 
         describe('pseudo1.html', function() {
-            var baseURI = __dirname + '/html/pseudo1.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo1.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 
@@ -56,11 +56,11 @@ describe('getComputedStyle', function() {
         });
 
         describe('pseudo2.html', function() {
-            var baseURI = __dirname + '/html/pseudo2.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo2.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 
@@ -81,11 +81,11 @@ describe('getComputedStyle', function() {
         });
 
         describe('pseudo3.html', function() {
-            var baseURI = __dirname + '/html/pseudo3.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo3.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 
@@ -106,11 +106,11 @@ describe('getComputedStyle', function() {
         });
 
         describe('pseudo4.html', function() {
-            var baseURI = __dirname + '/html/pseudo4.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo4.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 
@@ -132,11 +132,11 @@ describe('getComputedStyle', function() {
         });
 
         describe('pseudo5.html', function() {
-            var baseURI = __dirname + '/html/pseudo5.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo5.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 
@@ -158,11 +158,11 @@ describe('getComputedStyle', function() {
 
         // 测试继承属性
         describe('pseudo6.html', function() {
-            var baseURI = __dirname + '/html/pseudo6.html';
-            var html = fs.readFileSync(baseURI, 'utf8');
+            var url = __dirname + '/html/pseudo6.html';
+            var html = fs.readFileSync(url, 'utf8');
 
             var window = browser.sync(html, {
-                baseURI: baseURI,
+                url: url,
                 loadCssFile: false
             });
 

@@ -12,7 +12,7 @@ describe('W3C-Selector-tests', function() {
     var html = fs.readFileSync(__dirname + '/W3C-Selector-tests.html', 'utf8');
 
     var window = browser.sync(html, {
-        baseURI: __dirname + '/W3C-Selector-tests.html',
+        url: __dirname + '/W3C-Selector-tests.html',
         loadCssFile: true
     });
     var document = window.document;

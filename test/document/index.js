@@ -8,11 +8,11 @@ var path = require('path');
 
 describe('Document', function() {
 
-    var baseURI = __dirname + '/html/blank.html';
-    var html = fs.readFileSync(baseURI, 'utf8');
+    var url = __dirname + '/html/blank.html';
+    var html = fs.readFileSync(url, 'utf8');
 
     var window = browser.sync(html, {
-        baseURI: baseURI,
+        url: url,
         loadCssFile: false
     });
 
@@ -49,7 +49,7 @@ describe('Document', function() {
     });
 
     it('document.baseURI', function() {
-        assert.equal(baseURI, document.baseURI);
+        assert.equal(url, document.baseURI);
     });
 
     describe('#createElement()', function() {
@@ -70,7 +70,7 @@ describe('Document', function() {
             a.setAttribute('href', 'doc.html');
 
             assert.equal('A', a.nodeName);
-            assert.equal(path.dirname(baseURI) + '/doc.html', a.href);
+            assert.equal(path.dirname(url) + '/doc.html', a.href);
         });
     });
 
@@ -106,11 +106,11 @@ describe('Document', function() {
 
 describe('Element', function() {
 
-    var baseURI = __dirname + '/html/test.html';
-    var html = fs.readFileSync(baseURI, 'utf8');
+    var url = __dirname + '/html/test.html';
+    var html = fs.readFileSync(url, 'utf8');
 
     var window = browser.sync(html, {
-        baseURI: baseURI,
+        url: url,
         loadCssFile: false
     });
 

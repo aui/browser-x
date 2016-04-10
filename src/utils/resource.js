@@ -15,6 +15,7 @@ var BrowserAdapter = require('../adapters/browser-adapter');
 function Resource(adapter) {
     this.adapter = new BrowserAdapter(adapter);
     this.number = 0;
+    this.cache = {};
 }
 
 Resource.prototype = {
@@ -31,7 +32,7 @@ Resource.prototype = {
 
         var resource;
         var adapter = this.adapter;
-        var resourceCache = adapter.resourceCache();
+        var resourceCache = adapter.resourceCache;
         var that = this;
 
         // ignore > map > normalize
@@ -49,8 +50,8 @@ Resource.prototype = {
 
         adapter.resourceBeforeLoad(file);
 
-        if (resourceCache && resourceCache[file]) {
-            resource = resourceCache[file];
+        if (resourceCache && this.cache[file]) {
+            resource = this.cache[file];
             if (resource) {
                 return resource;
             }
@@ -78,7 +79,7 @@ Resource.prototype = {
 
 
         if (resourceCache) {
-            resourceCache[file] = resource;
+            this.cache[file] = resource;
         }
 
         return resource;

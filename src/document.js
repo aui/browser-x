@@ -20,14 +20,14 @@ function Document(options) {
     this._documentElement = null;
     this._styleSheets = null;
     this._options = options;
-    this._baseURI = options.baseURI;
+    this._url = options.url;
 }
 
 Document.prototype = Object.create(Node.prototype, {
     URL: {
         get: function() {
             // TODO
-            return this._baseURI;
+            return this._url;
         }
     },
     baseURI: {
@@ -36,7 +36,7 @@ Document.prototype = Object.create(Node.prototype, {
             if (base) {
                 return base.getAttribute('href');
             } else {
-                return this._baseURI;
+                return this._url;
             }
         }
     },

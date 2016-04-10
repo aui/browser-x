@@ -9,11 +9,8 @@ function BrowserAdapter(options) {
     }
 
     for (var key in options) {
-        var value = options[key];
-        this[key] = value;
+        this[key] = options[key];
     }
-
-    this._resourceCache = {};
 }
 
 BrowserAdapter.prototype = {
@@ -23,10 +20,10 @@ BrowserAdapter.prototype = {
     /**
      * 文件基础路径
      */
-    baseURI: 'about:blank',
+    url: 'about:blank',
 
     /*
-     * HTML 文本
+     * HTML 内容
      */
     html: null,
 
@@ -36,7 +33,7 @@ BrowserAdapter.prototype = {
     loadCssFile: false,
 
     /**
-     * 解析时是否静默失败
+     * 是否忽略内部解析错误-打开它有利于开发调试
      * @type    {Boolean}
      */
     silent: true,
@@ -54,12 +51,10 @@ BrowserAdapter.prototype = {
     resourceMaxNumber: 64,
 
     /**
-     * 获取缓存
+     * 是否缓存请求成功的资源
      * @return  {Object}
      */
-    resourceCache: function() {
-        return this._resourceCache;
-    },
+    resourceCache: true,
 
     /**
      * 映射资源路径

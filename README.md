@@ -1,6 +1,6 @@
 # browser-x
 
-这是一个基于 NodeJS 实现的“浏览器”，它实现了 DOM 的一些基础 API 可供开发人员使用。你可以：
+browser-x 一个基于 NodeJS 实现的“浏览器”，它实现 W3C 核心 API，适用于文档或样式节点分析：
 
 * 使用 CSS3 选择器来操作 DOM
 * 分析 CSS 在文档中的应用情况
@@ -18,11 +18,9 @@ npm install browser-x
 ```javascript
 var browser = require('browser-x');
 
-var baseURI = __dirname + '/debug.html';
-var html = fs.readFileSync(baseURI, 'utf8');
+var url = __dirname + '/debug.html';
 browser({
-    html: html,
-    baseURI: baseURI,
+    url: url,
     loadCssFile: true,
     silent: false
 }, function (errors, window) {
@@ -36,24 +34,6 @@ browser({
 });
 ```
 
-### browser.open(url, options, callback)
-
-```javascript
-var browser = require('browser-x');
-
-browser.open('http://font-spider.org', {
-    loadCssFile: true,
-    silent: false
-}, function (errors, window) {
-    if (errors) {
-        throw errors;
-    }
-    console.log(window.document.title);
-});
-```
-
-> browser() 与 browser.open() 均返回`Promise`对象
-
 ## options
 
 ```
@@ -61,10 +41,10 @@ browser.open('http://font-spider.org', {
     /**
      * 文件基础路径
      */
-    baseURI: 'about:blank',
+    url: 'about:blank',
 
     /*
-     * HTML 文本
+     * HTML 文本内容
      */
     html: null,
 

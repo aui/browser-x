@@ -15,39 +15,40 @@ var loadCssFiles = require('./src/style/load-css-files');
  * @param   {Promise}
  */
 function browser(options, callback) {
+    options = new BrowserAdapter(options);
     callback = callback || function() {};
+
+
     return new Promise(function(resolve, reject) {
-        var window = browser.sync(options.html, options);
-        window.onload = function() {
-            resolve(window);
-            callback(null, window);
-        };
-        window.onerror = function(errors) {
-            reject(errors);
-            callback(errors);
-        };
+
+        if (options.html) {
+            var window = browser.sync(options.html, options);
+            start(window);
+        } else if (options.url) {
+            new Resource(options).get(options.url).then(function(html) {
+                options.html = html;
+                var window = browser.sync(options.html, options);
+                start(window);
+            });
+        }
+
+        function start(window) {
+            window.onload = function() {
+                resolve(window);
+                callback(null, window);
+            };
+            window.onerror = function(errors) {
+                reject(errors);
+                callback(errors);
+            };
+        }
     });
 }
 
 
-/**
- * @param   {String}    页面地址（本地或远程）
- * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
- * @param   {Function}  回调函数（可选）
- * @param   {Promise}
- */
-browser.open = function(url, options, callback) {
-    options = new BrowserAdapter(options);
-    options.baseURI = url;
-    return (new Resource(options)).get(url).then(function(html) {
-        options.html = html;
-        return browser(options, callback);
-    });
-};
-
 
 /**
- * @param   {String, Buffer}    HTML
+ * @param   {String}    HTML
  * @param   {Object}    选项（可选）@see ./src/adapters/browser-adapter
  * @param   {Window}
  */

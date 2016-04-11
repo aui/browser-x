@@ -1,6 +1,6 @@
 {
     "name": "browser-x",
-    "version": "0.0.1-pre3",
+    "version": "0.0.1-beta",
     "description": "A partial implementation of the W3C DOM API on top of an HTML5 parser and serializer.",
     "main": "index.js",
     "dependencies": {
@@ -27,5 +27,8 @@
         "style",
         "getComputedStyle"
     ],
+    "engines": {
+        "node": ">= 4.0.0"
+    },
     "license": "MIT"
 }

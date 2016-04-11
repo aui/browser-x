@@ -54,7 +54,7 @@ browser({
     loadCssFile: false,
 
     /**
-     * 解析时是否静默失败
+     * 是否忽略内部解析错误-打开它有利于开发调试
      * @type    {Boolean}
      */
     silent: true,
@@ -70,6 +70,12 @@ browser({
      * @tyoe    {Number}    数量
      */
     resourceMaxNumber: 64,
+
+    /**
+     * 是否缓存请求成功的资源
+     * @return  {Object}
+     */
+    resourceCache: true,
 
     /**
      * 映射资源路径
@@ -182,3 +188,7 @@ browser-x 适合做这些事情：
 2. 分析元素的样式使用情况，例如和 CSS 相关的开发工具
 
 如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（它唯一没有做好的是样式解析）。
+
+### 它们在使用 browser-x
+
+1. [font-spider](https://github.com/aui/font-spider)

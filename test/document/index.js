@@ -50,6 +50,16 @@ describe('Document', function() {
 
     it('document.baseURI', function() {
         assert.equal(url, document.baseURI);
+
+        var file = __dirname + '/html/tag-base.html';
+        var html = fs.readFileSync(file, 'utf8');
+
+        var window = browser.sync(html, {
+            url: file,
+            loadCssFile: false
+        });
+
+        assert.equal(file + '#', window.document.baseURI);
     });
 
     describe('#createElement()', function() {

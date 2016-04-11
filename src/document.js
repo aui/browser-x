@@ -1,6 +1,7 @@
 'use strict';
 
 var VError = require('verror');
+var url = require('url');
 var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
@@ -34,7 +35,7 @@ Document.prototype = Object.create(Node.prototype, {
         get: function() {
             var base = this.getElementsByTagName('base').item(0);
             if (base) {
-                return base.getAttribute('href');
+                return url.resolve(this._url, base.getAttribute('href'));
             } else {
                 return this._url;
             }

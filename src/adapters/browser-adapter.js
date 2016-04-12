@@ -33,7 +33,7 @@ BrowserAdapter.prototype = {
     loadCssFile: false,
 
     /**
-     * 是否忽略内部解析错误-打开它有利于开发调试
+     * 是否忽略内部解析错误-关闭它有利于开发调试
      * @type    {Boolean}
      */
     silent: true,

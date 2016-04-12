@@ -2,6 +2,7 @@
 
 var VError = require('verror');
 var url = require('url');
+var path = require('path');
 var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
@@ -10,8 +11,8 @@ var Element = require('./element');
 var HTMLElement = require('./html-element');
 var Node = require('./node');
 var Text = require('./text');
-var StyleSheetList = require('./style-sheet-list');
 var Window = require('./window');
+var StyleSheetList = require('./style-sheet-list');
 
 
 function Document(options) {
@@ -22,6 +23,11 @@ function Document(options) {
     this._styleSheets = null;
     this._options = options;
     this._url = options.url;
+
+    // TODO about:blank
+    if (!/^https?\:/.test(this._url)) {
+        this._url = path.resolve(this._url);
+    }
 }
 
 Document.prototype = Object.create(Node.prototype, {

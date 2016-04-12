@@ -19,16 +19,19 @@ BrowserAdapter.prototype = {
 
     /**
      * 文件基础路径
+     * @type    {String}
      */
     url: 'about:blank',
 
     /*
      * HTML 内容
+     * @type    {String}
      */
     html: null,
 
     /**
      * 是否支持加载外部 CSS 文件
+     * @type    {Boolean}
      */
     loadCssFile: false,
 
@@ -46,13 +49,13 @@ BrowserAdapter.prototype = {
 
     /**
      * 最大的文件加载数量限制
-     * @tyoe    {Number}    数量
+     * @type    {Number}    数量
      */
     resourceMaxNumber: 64,
 
     /**
      * 是否缓存请求成功的资源
-     * @return  {Object}
+     * @type    {Boolean}
      */
     resourceCache: true,
 

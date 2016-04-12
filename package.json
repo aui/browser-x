@@ -1,7 +1,19 @@
 {
     "name": "browser-x",
-    "version": "0.0.1-beta1",
+    "version": "0.0.1-beta2",
     "description": "A partial implementation of the W3C DOM API on top of an HTML5 parser and serializer.",
+    "homepage": "https://github.com/aui/browser-x",
+    "author": {
+        "name": "aui",
+        "email": "sugarpie.tang@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/aui/browser-x.git"
+    },
+    "bugs": {
+        "url": "https://github.com/aui/browser-x/issues"
+    },
     "main": "index.js",
     "dependencies": {
         "css-mediaquery": "^0.1.2",
@@ -13,7 +25,6 @@
         "verror": "^1.6.1"
     },
     "scripts": {
-        "debug": "node-inspector test/debug.js",
         "test": "mocha ./test/index"
     },
     "keywords": [

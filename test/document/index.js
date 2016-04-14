@@ -183,3 +183,28 @@ describe('Element', function() {
     });
 
 });
+
+
+describe('Node', function() {
+    var url = __dirname + '/html/test.html';
+    var html = fs.readFileSync(url, 'utf8');
+
+    var window = browser.sync(html, {
+        url: url,
+        loadCssFile: false
+    });
+
+    var document = window.document;
+
+    it('node.textContent', function() {
+        assert.equal('text-content', document.getElementById('text-content').textContent);
+    });
+
+    it('node.textContent: textarea', function() {
+        assert.equal('text-content-textarea', document.getElementById('text-content-textarea').textContent);
+    });
+
+    it('node.textContent: Escape Sequence', function() {
+        assert.equal('<>"\'&', document.getElementById('text-content-escape').textContent);
+    });
+});

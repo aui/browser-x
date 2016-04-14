@@ -7,7 +7,7 @@ browser-x 一个基于 NodeJS 实现的“浏览器”，它实现 W3C 核心 AP
 
 ## 安装
 
-```shell
+``` shell
 npm install browser-x
 ```
 
@@ -15,7 +15,7 @@ npm install browser-x
 
 ### browser(options, callback)
 
-```javascript
+``` javascript
 var browser = require('browser-x');
 
 var url = __dirname + '/debug.html';
@@ -36,7 +36,7 @@ browser({
 
 ## options
 
-```
+``` javascript
 {
     /**
      * 文件基础路径
@@ -135,10 +135,6 @@ npm test
 * window.CSSStyleSheet()
 * window.CSSKeyframesRule()
 * window.CSSKeyframeRule()
-* window.MatcherList()
-* window.CSSDocumentRule()
-* window.CSSValue()
-* window.CSSValueExpression()
 * document.URL
 * document.baseURI
 * document.documentElement

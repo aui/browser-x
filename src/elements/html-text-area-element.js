@@ -1,12 +1,12 @@
 'use strict';
 
-var Element = require('../element');
+var HTMLElement = require('../html-element');
 
 function HTMLTextAreaElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLTextAreaElement.prototype = Object.create(Element.prototype, {
+HTMLTextAreaElement.prototype = Object.create(HTMLElement.prototype, {
     type: {
         get: function() {
             return 'textarea';

@@ -1,12 +1,12 @@
 'use strict';
 
-var Element = require('../element');
+var HTMLElement = require('../html-element');
 
 function HTMLSelectElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLSelectElement.prototype = Object.create(Element.prototype, {
+HTMLSelectElement.prototype = Object.create(HTMLElement.prototype, {
     options: {
         // TODO HTMLOptionsCollection
         get: function() {
@@ -61,7 +61,6 @@ HTMLSelectElement.prototype = Object.create(Element.prototype, {
 
 HTMLSelectElement.prototype.constructor = HTMLSelectElement;
 
-
 function closest(e, nodeName) {
     while (e) {
         if (e.nodeName === nodeName) {
@@ -72,6 +71,5 @@ function closest(e, nodeName) {
 
     return null;
 }
-
 
 module.exports = HTMLSelectElement;

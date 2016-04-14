@@ -1,19 +1,18 @@
 'use strict';
 
 var url = require('url');
-var Element = require('../element');
-
+var HTMLElement = require('../html-element');
 
 function HTMLLinkElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLLinkElement.prototype = Object.create(Element.prototype, {
+HTMLLinkElement.prototype = Object.create(HTMLElement.prototype, {
     href: {
         get: function() {
             var href = this.getAttribute('href');
             // TODO file://
-            return url.resolve(this.ownerDocument.baseURI, href);
+            return url.resolve(this.baseURI, href);
         }
     },
     disabled: {
@@ -24,4 +23,5 @@ HTMLLinkElement.prototype = Object.create(Element.prototype, {
 });
 
 HTMLLinkElement.prototype.constructor = HTMLLinkElement;
+
 module.exports = HTMLLinkElement;

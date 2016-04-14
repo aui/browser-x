@@ -1,12 +1,12 @@
 'use strict';
 
-var Element = require('../element');
+var HTMLElement = require('../html-element');
 
 function HTMLButtonElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLButtonElement.prototype = Object.create(Element.prototype, {
+HTMLButtonElement.prototype = Object.create(HTMLElement.prototype, {
     type: {
         get: function() {
             var type = this.getAttribute('type');

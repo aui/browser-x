@@ -1,18 +1,18 @@
 'use strict';
 
 var url = require('url');
-var Element = require('../element');
+var HTMLElement = require('../html-element');
 
 function HTMLImageElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLImageElement.prototype = Object.create(Element.prototype, {
+HTMLImageElement.prototype = Object.create(HTMLElement.prototype, {
     src: {
         get: function() {
             var src = this.getAttribute('src');
             // TODO file://
-            return url.resolve(this.ownerDocument.baseURI, src);
+            return url.resolve(this.baseURI, src);
         }
     }
 });

@@ -1,18 +1,18 @@
 'use strict';
 
 var url = require('url');
-var Element = require('../element');
+var HTMLElement = require('../html-element');
 
 function HTMLFormElement(document, name, namespaceURI) {
-    Element.call(this, document, name, namespaceURI);
+    HTMLElement.call(this, document, name, namespaceURI);
 }
 
-HTMLFormElement.prototype = Object.create(Element.prototype, {
+HTMLFormElement.prototype = Object.create(HTMLElement.prototype, {
     action: {
         get: function() {
             var action = this.getAttribute('action');
             // TODO file://
-            return url.resolve(this.ownerDocument.baseURI, action);
+            return url.resolve(this.baseURI, action);
         }
     },
     enctype: {

@@ -154,6 +154,7 @@ npm test
     - [className](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className)
     - [innerHTML](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML)
     - [outerHTML](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/outerHTML)
+    - [attributes](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.attributes)
     - [hasAttribute()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/hasAttribute)
     - [getAttribute()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute)
     - [querySelector()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/querySelector)
@@ -161,11 +162,10 @@ npm test
     - [getElementsByTagName()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getElementsByTagName)
     - [matches()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/matches)
 * HTMLElement
-    - [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)
+    - [style](https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/style)
 * Node
     - [nodeName](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeName)
     - [nodeType](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeType)
-    - [attributes](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.attributes)
     - [childNodes](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.childNodes)
     - [parentNode](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.parentNode)
     - [firstChild](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.firstChild)

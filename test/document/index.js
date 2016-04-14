@@ -144,10 +144,6 @@ describe('Element', function() {
         assert.equal('DIV', document.getElementById('DIV2').tagName);
     });
 
-    it('element.baseURI', function() {
-        assert.equal('htts://www.font-spider.org:80/', document.documentElement.baseURI);
-    });
-
     it('element.innerHTML', function() {
         assert.equal('.test::after{content:\'<>\'}', document.getElementById('style').innerHTML);
         assert.equal('<em>h1</em>', document.getElementById('h1').innerHTML);
@@ -207,4 +203,14 @@ describe('Node', function() {
     it('node.textContent: Escape Sequence', function() {
         assert.equal('<>"\'&', document.getElementById('text-content-escape').textContent);
     });
+
+    it('node.baseURI', function() {
+        assert.equal('htts://www.font-spider.org:80/', document.documentElement.baseURI);
+    });
+
+    it('node.constructor.name', function() {
+        assert.equal('HTMLUnknownElement', document.createElement('hue').constructor.name);
+    });
+
+
 });

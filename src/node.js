@@ -1,10 +1,12 @@
 'use strict';
 
+var url = require('url');
 var DOMException = require('./dom-exception');
 var NodeList = require('./node-list');
 var NamedNodeMap = require('./named-node-map');
 
 function Node(ownerDocument, nodeName, nodeValue, nodeType) {
+    // TODO hasAttributes
     Object.defineProperties(this, {
         _parent: {
             writable: true
@@ -42,7 +44,18 @@ function Node(ownerDocument, nodeName, nodeValue, nodeType) {
         ownerDocument: {
             enumerable: true,
             value: ownerDocument
+        },
+        baseURI: {
+            get: function() {
+                var base = ownerDocument.getElementsByTagName('base').item(0);
+                if (base) {
+                    return url.resolve(ownerDocument.URL, base.getAttribute('href'));
+                } else {
+                    return ownerDocument.URL;
+                }
+            }
         }
+
     });
 }
 
@@ -123,7 +136,7 @@ Node.prototype = Object.create(Object.prototype, {
 Node.prototype.constructor = Node;
 
 // TODO test
-Node.prototype.insertBefore = function(newChild) {
+Node.prototype.insertBefore = function(newChild) { // jshint ignore:line
     throw new Error('not yet implemented');
 
     // if (newChild._parent) {

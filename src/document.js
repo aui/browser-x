@@ -1,19 +1,16 @@
 'use strict';
 
 var VError = require('verror');
-var url = require('url');
 var path = require('path');
 var cssom = require('./style');
 var Attr = require('./attr');
 var Comment = require('./comment');
-var DocumentType = require('./document-type');
 var Element = require('./element');
-var HTMLElement = require('./html-element');
 var Node = require('./node');
 var Text = require('./text');
 var Window = require('./window');
 var StyleSheetList = require('./style-sheet-list');
-
+var createElement = require('./elements').create;
 
 function Document(options) {
     Node.call(this, this, '#document', null, Node.DOCUMENT_NODE);
@@ -35,16 +32,6 @@ Document.prototype = Object.create(Node.prototype, {
         get: function() {
             // TODO
             return this._url;
-        }
-    },
-    baseURI: {
-        get: function() {
-            var base = this.getElementsByTagName('base').item(0);
-            if (base) {
-                return url.resolve(this._url, base.getAttribute('href'));
-            } else {
-                return this._url;
-            }
         }
     },
     doctype: {
@@ -146,9 +133,7 @@ Document.prototype.createElement = function(tagName) {
     return this.createElementNS(namespaceURI, tagName);
 };
 
-Document.prototype.createElementNS = function(namespaceURI, tagName) {
-    return HTMLElement(this, namespaceURI, tagName);
-};
+Document.prototype.createElementNS = createElement;
 
 Document.prototype.createDocumentFragment = function() {
     throw new Error('not yet implemented');

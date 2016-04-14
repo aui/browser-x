@@ -45,11 +45,6 @@ Element.prototype = Object.create(Node.prototype, {
                 childNodes: new NodeList([this])
             }, this.ownerDocument._options.parserAdapter);
         }
-    },
-    baseURI: {
-        get: function() {
-            return this.ownerDocument.baseURI;
-        }
     }
 });
 

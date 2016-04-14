@@ -21,10 +21,6 @@ function Window(document) {
     this.CSSStyleSheet = cssom.CSSStyleSheet;
     this.CSSKeyframesRule = cssom.CSSKeyframesRule;
     this.CSSKeyframeRule = cssom.CSSKeyframeRule;
-    this.MatcherList = cssom.MatcherList;
-    this.CSSDocumentRule = cssom.CSSDocumentRule;
-    this.CSSValue = cssom.CSSValue;
-    this.CSSValueExpression = cssom.CSSValueExpression;
 
     nwmatcherFix(this);
 }

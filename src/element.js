@@ -6,6 +6,7 @@ var parse5 = require('parse5');
 var Attr = require('./attr');
 var Node = require('./node');
 var NodeList = require('./node-list');
+var NamedNodeMap = require('./named-node-map');
 
 function Element(ownerDocument, name, namespaceURI) {
     Node.call(this, ownerDocument, name, null, Node.ELEMENT_NODE);
@@ -13,11 +14,19 @@ function Element(ownerDocument, name, namespaceURI) {
         namespaceURI: {
             enumerable: true,
             value: namespaceURI
+        },
+        _attributes: {
+            value: new NamedNodeMap()
         }
     });
 }
 
 Element.prototype = Object.create(Node.prototype, {
+    attributes: {
+        get: function() {
+            return this._attributes;
+        }
+    },
     id: {
         get: function() {
             return this.getAttribute('id') || '';
@@ -46,30 +55,31 @@ Element.prototype = Object.create(Node.prototype, {
             }, this.ownerDocument._options.parserAdapter);
         }
     }
+
 });
 
 Element.prototype.constructor = Element;
 
 Element.prototype.hasAttribute = function(name) {
-    return this.attributes.getNamedItem(name) !== null;
+    return this._attributes.getNamedItem(name) !== null;
 };
 
 Element.prototype.getAttribute = function(name) {
-    var attr = this.attributes.getNamedItem(name);
+    var attr = this._attributes.getNamedItem(name);
     return attr && attr.nodeValue;
 };
 
 Element.prototype.setAttribute = function(name, value) {
     var attr = new Attr(this.ownerDocument, name, true, value);
-    this.attributes.setNamedItem(attr);
+    this._attributes.setNamedItem(attr);
 };
 
 Element.prototype.removeAttribute = function(name) {
-    this.attributes.removeNamedItem(name);
+    this._attributes.removeNamedItem(name);
 };
 
 Element.prototype.getAttributeNode = function(name) {
-    return this.attributes.getNamedItem(name);
+    return this._attributes.getNamedItem(name);
 };
 
 Element.prototype.setAttributeNode = function() {
@@ -77,6 +87,10 @@ Element.prototype.setAttributeNode = function() {
 };
 
 Element.prototype.removeAttributeNode = function() {
+    throw new Error('not yet implemented');
+};
+
+Element.prototype.getElementsByClassName = function() {
     throw new Error('not yet implemented');
 };
 

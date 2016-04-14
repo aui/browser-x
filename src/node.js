@@ -3,10 +3,11 @@
 var url = require('url');
 var DOMException = require('./dom-exception');
 var NodeList = require('./node-list');
-var NamedNodeMap = require('./named-node-map');
 
 function Node(ownerDocument, nodeName, nodeValue, nodeType) {
-    // TODO hasAttributes
+    // TODO hasAttributes()
+    // TODO contains()
+    // TODO replaceChild()
     Object.defineProperties(this, {
         _parent: {
             writable: true
@@ -22,9 +23,6 @@ function Node(ownerDocument, nodeName, nodeValue, nodeType) {
         },
         _previous: {
             writable: true
-        },
-        _attributes: {
-            value: new NamedNodeMap()
         },
         childNodes: {
             value: new NodeList([])
@@ -60,17 +58,17 @@ function Node(ownerDocument, nodeName, nodeValue, nodeType) {
 }
 
 Node.ELEMENT_NODE = 1;
-Node.ATTRIBUTE_NODE = 2;
+Node.ATTRIBUTE_NODE = 2;                // 搴熷純
 Node.TEXT_NODE = 3;
-Node.CDATA_SECTION_NODE = 4;
-Node.ENTITY_REFERENCE_NODE = 5;
-Node.ENTITY_NODE = 6;
+Node.CDATA_SECTION_NODE = 4;            // 搴熷純
+Node.ENTITY_REFERENCE_NODE = 5;         // 搴熷純
+Node.ENTITY_NODE = 6;                   // 搴熷純
 Node.PROCESSING_INSTRUCTION_NODE = 7;
 Node.COMMENT_NODE = 8;
 Node.DOCUMENT_NODE = 9;
 Node.DOCUMENT_TYPE_NODE = 10;
 Node.DOCUMENT_FRAGMENT_NODE = 11;
-Node.NOTATION_NODE = 12;
+Node.NOTATION_NODE = 12;                // 搴熷純
 
 Node.prototype = Object.create(Object.prototype, {
     parentNode: {
@@ -96,11 +94,6 @@ Node.prototype = Object.create(Object.prototype, {
     previousSibling: {
         get: function() {
             return this._previous;
-        }
-    },
-    attributes: {
-        get: function() {
-            return this._attributes;
         }
     },
     textContent: {
@@ -135,7 +128,6 @@ Node.prototype = Object.create(Object.prototype, {
 
 Node.prototype.constructor = Node;
 
-// TODO test
 Node.prototype.insertBefore = function(newChild) { // jshint ignore:line
     throw new Error('not yet implemented');
 
@@ -166,7 +158,7 @@ Node.prototype.removeChild = function(oldChild) {
         throw new DOMException(DOMException.HIERARCHY_REQUEST_ERR);
     }
 
-    // TODO 性能优化
+    // TODO 鎬ц兘浼樺寲
     Array.prototype.splice.call(this.childNodes, Array.prototype.indexOf.call(oldChild), 1);
 
     if (oldChild._previous) {
@@ -204,7 +196,7 @@ Node.prototype.appendChild = function(newChild) {
 
     this._last = newChild;
 
-    // TODO 性能优化
+    // TODO 鎬ц兘浼樺寲
     Array.prototype.push.call(this.childNodes, newChild);
 
     return newChild;

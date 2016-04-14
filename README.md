@@ -1,6 +1,6 @@
 # browser-x
 
-browser-x 一个基于 NodeJS 实现的“浏览器”，它实现 W3C 核心 API，适用于文档或样式节点分析：
+browser-x 一个基于 NodeJS 实现的“浏览器”，它实现了浏览器的精华 API，适用于文档或样式节点分析：
 
 * 使用 CSS3 选择器来操作 DOM
 * 分析 CSS 在文档中的应用情况
@@ -14,6 +14,8 @@ npm install browser-x
 ## 接口
 
 ### browser(options, callback)
+
+返回：Promise
 
 ``` javascript
 var browser = require('browser-x');
@@ -117,64 +119,72 @@ browser({
 
 ## 运行单元测试
 
+克隆源码，然后进入源码目录执行：
+
 ```shell
 npm test
 ```
 
 ## 支持的 DOM API
 
-* window.getComputedStyle()
-* window.CSSStyleDeclaration()
-* window.CSSRule()
-* window.CSSStyleRule()
-* window.MediaList()
-* window.CSSMediaRule()
-* window.CSSImportRule()
-* window.CSSFontFaceRule()
-* window.StyleSheet()
-* window.CSSStyleSheet()
-* window.CSSKeyframesRule()
-* window.CSSKeyframeRule()
-* document.URL
-* document.baseURI
-* document.documentElement
-* document.head
-* document.body
-* document.title
-* document.styleSheets
-* document.getElementsByTagName()
-* document.getElementById()
-* document.querySelector()
-* document.querySelectorAll()
-* element.id
-* element.tagName
-* element.style
-* element.className
-* element.innerHTML
-* element.outerHTML
-* element.hasAttribute()
-* element.getAttribute()
-* element.querySelector()
-* element.querySelectorAll()
-* element.getElementsByTagName()
-* element.matches()
-* node.nodeName
-* node.nodeType
-* node.attributes
-* node.childNodes
-* node.parentNode
-* node.firstChild
-* node.lastChild
-* node.nextSibling
-* node.previousSibling
-* node.textContent
+* Window
+    - [getComputedStyle()](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle)
+    - [CSSStyleDeclaration()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleDeclaration)
+    - [CSSRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSRule)
+    - [CSSStyleRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleRule)
+    - [MediaList()](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaList)
+    - [CSSMediaRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSMediaRule)
+    - [CSSImportRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSImportRule)
+    - [CSSFontFaceRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSFontFaceRule)
+    - [StyleSheet()](https://developer.mozilla.org/zh-CN/docs/Web/API/StyleSheet)
+    - [CSSStyleSheet()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleSheet)
+    - [CSSKeyframesRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSKeyframesRule)
+    - [CSSKeyframeRule()](https://developer.mozilla.org/zh-CN/docs/Web/API/CSSKeyframeRule)
+* Document
+    - [URL](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/URL)
+    - [documentElement](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/documentElement)
+    - [head](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/head)
+    - [body](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/body)
+    - [title](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/title)
+    - [styleSheets](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/styleSheets)
+    - [getElementsByTagName()](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName)
+    - [getElementById()](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById)
+    - [querySelector()](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector)
+    - [querySelectorAll()](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll)
+* Element
+    - [id](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id)
+    - [tagName](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/tagName)
+    - [className](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className)
+    - [innerHTML](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML)
+    - [outerHTML](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/outerHTML)
+    - [hasAttribute()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/hasAttribute)
+    - [getAttribute()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute)
+    - [querySelector()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/querySelector)
+    - [querySelectorAll()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/querySelectorAll)
+    - [getElementsByTagName()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getElementsByTagName)
+    - [matches()](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/matches)
+* HTMLElement
+    - [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style)
+* Node
+    - [nodeName](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeName)
+    - [nodeType](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeType)
+    - [attributes](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.attributes)
+    - [childNodes](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.childNodes)
+    - [parentNode](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.parentNode)
+    - [firstChild](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.firstChild)
+    - [lastChild](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.lastChild)
+    - [nextSibling](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nextSibling)
+    - [previousSibling](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.previousSibling)
+    - [textContent](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.textContent)
+    - [baseURI](https://developer.mozilla.org/zh-CN/docs/Web/API/Node.baseURI)
 
 ## 注意事项
 
 1. 不支持 XML 文档解析 
-2. 所有的 DOM 属性均为只读
+2. 所有的 DOM 属性均为只读（*计划在下一版本支持*）
 3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的原始值或继承属性，但没有进行计算输出（例如 em \> px）
 4. document.styleSheets 在浏览器中无法跨域访问 CSSOM，browser-x 没有做此限制
+5. 不支持浏览器怪异模式
 
 ## 为什么使用 browser-x
 

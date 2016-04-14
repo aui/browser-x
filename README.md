@@ -1,9 +1,6 @@
 # browser-x
 
-browser-x 一个基于 NodeJS 实现的“浏览器”，它实现了浏览器的精华 API，适用于文档或样式节点分析：
-
-* 使用 CSS3 选择器来操作 DOM
-* 分析 CSS 在文档中的应用情况
+browser-x 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。
 
 ## 安装
 
@@ -15,7 +12,7 @@ npm install browser-x
 
 ### browser(options, callback)
 
-返回：Promise
+返回：`Promise`
 
 ``` javascript
 var browser = require('browser-x');

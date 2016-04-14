@@ -3,6 +3,7 @@
 var Document = require('../document');
 var Comment = require('../comment');
 var Node = require('../node');
+var DocumentType = require('../document-type');
 
 function ParserAdapter(options) {
 
@@ -55,8 +56,8 @@ ParserAdapter.prototype = {
 
     getTemplateContent: function() {},
 
-    setDocumentType: function(document, name, publicId, systemId) { // jshint ignore:line
-        document._setDocumentType(name, publicId, systemId);
+    setDocumentType: function(document, name, publicId, systemId) {
+        document.doctype = new DocumentType(document, name, publicId, systemId);
     },
 
     setQuirksMode: function(document) { // jshint ignore:line
@@ -69,7 +70,6 @@ ParserAdapter.prototype = {
     detachNode: function(node) { // jshint ignore:line
     },
 
-    // TODO 串联相邻的文本节点
     insertText: function(node, data) {
         node.appendChild(this.document.createTextNode(data));
     },
@@ -93,7 +93,7 @@ ParserAdapter.prototype = {
     },
 
     getAttrList: function(node) {
-        return node.attributes
+        return node.attributes;
     },
 
     getTagName: function(node) {

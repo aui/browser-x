@@ -50,6 +50,12 @@ Document.prototype = Object.create(Node.prototype, {
     doctype: {
         get: function() {
             return this._doctype;
+        },
+        set: function(doctype) {
+            // 设置一次后就不许修改了
+            if (!this._doctype) {
+                this._doctype = doctype;
+            }
         }
     },
     compatMode: {
@@ -195,11 +201,6 @@ Document.prototype.querySelector = function(selector) {
 
 Document.prototype.querySelectorAll = function(selector) {
     return Element.prototype.querySelectorAll.call(this, selector);
-};
-
-
-Document.prototype._setDocumentType = function(name, publicId, systemId) {
-    this._doctype = new DocumentType(this, name, publicId, systemId);
 };
 
 

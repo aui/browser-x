@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>BrowserX by aui</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">BrowserX</h1>
+      <h2 class="project-tagline">一个基于 NodeJS 实现的轻量级“浏览器”</h2>
+      <a href="https://github.com/aui/browser-x" class="btn">View on GitHub</a>
+      <a href="https://github.com/aui/browser-x/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/aui/browser-x/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="browserx" class="anchor" href="#browserx" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>BrowserX</h1>
+
+<p><a href="https://npmjs.org/package/browser-x"><img src="https://img.shields.io/npm/v/browser-x.svg" alt="NPM Version"></a>
+<a href="https://npmjs.org/package/browser-x"><img src="https://img.shields.io/npm/dm/browser-x.svg" alt="NPM Downloads"></a>
+<a href="http://nodejs.org/download/"><img src="https://img.shields.io/node/v/browser-x.svg" alt="Node.js Version"></a>
+<a href="https://travis-ci.org/aui/browser-x"><img src="https://travis-ci.org/aui/browser-x.svg?branch=master" alt="Build Status"></a></p>
+
+<p>browser-x 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。</p>
+
+<h2>
+<a id="安装" class="anchor" href="#%E5%AE%89%E8%A3%85" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>安装</h2>
+
+<div class="highlight highlight-source-shell"><pre>npm install browser-x</pre></div>
+
+<h2>
+<a id="接口" class="anchor" href="#%E6%8E%A5%E5%8F%A3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>接口</h2>
+
+<h3>
+<a id="browseroptions-callback" class="anchor" href="#browseroptions-callback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>browser(options, callback)</h3>
+
+<p>返回：<code>Promise</code></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> browser <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>browser-x<span class="pl-pds">'</span></span>);
+
+<span class="pl-k">var</span> url <span class="pl-k">=</span> <span class="pl-c1">__dirname</span> <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">'</span>/debug.html<span class="pl-pds">'</span></span>;
+<span class="pl-en">browser</span>({
+    url<span class="pl-k">:</span> url,
+    loadCssFile<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+    silent<span class="pl-k">:</span> <span class="pl-c1">false</span>
+}, <span class="pl-k">function</span> (<span class="pl-smi">errors</span>, <span class="pl-c1">window</span>) {
+    <span class="pl-k">if</span> (errors) {
+        <span class="pl-k">throw</span> errors;
+    }
+    <span class="pl-k">var</span> <span class="pl-c1">document</span> <span class="pl-k">=</span> <span class="pl-c1">window</span>.<span class="pl-smi">document</span>;
+    <span class="pl-k">var</span> element <span class="pl-k">=</span> <span class="pl-c1">document</span>.<span class="pl-en">querySelector</span>(<span class="pl-s"><span class="pl-pds">'</span>#banner h2<span class="pl-pds">'</span></span>);
+    <span class="pl-k">var</span> fontFamily <span class="pl-k">=</span> <span class="pl-c1">window</span>.<span class="pl-en">getComputedStyle</span>(element, <span class="pl-s"><span class="pl-pds">'</span>::after<span class="pl-pds">'</span></span>).<span class="pl-c1">fontFamily</span>;
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(fontFamily);
+});</pre></div>
+
+<h2>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>options</h2>
+
+<div class="highlight highlight-source-js"><pre>{
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 文件基础路径</span>
+<span class="pl-c">     */</span>
+    url<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>about:blank<span class="pl-pds">'</span></span>,
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * HTML 文本内容</span>
+<span class="pl-c">     */</span>
+    html<span class="pl-k">:</span> <span class="pl-c1">null</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 是否支持加载外部 CSS 文件</span>
+<span class="pl-c">     */</span>
+    loadCssFile<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 是否忽略内部解析错误-关闭它有利于开发调试</span>
+<span class="pl-c">     * <span class="pl-k">@type</span>    {Boolean}</span>
+<span class="pl-c">     */</span>
+    silent<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 请求超时限制</span>
+<span class="pl-c">     * <span class="pl-k">@type</span>    {Number}    毫秒</span>
+<span class="pl-c">     */</span>
+    resourceTimeout<span class="pl-k">:</span> <span class="pl-c1">8000</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 最大的文件加载数量限制</span>
+<span class="pl-c">     * <span class="pl-k">@type</span>    {Number}    数量</span>
+<span class="pl-c">     */</span>
+    resourceMaxNumber<span class="pl-k">:</span> <span class="pl-c1">64</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 是否缓存请求成功的资源</span>
+<span class="pl-c">     * <span class="pl-k">@return</span>  {Object}</span>
+<span class="pl-c">     */</span>
+    resourceCache<span class="pl-k">:</span> <span class="pl-c1">true</span>,
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 映射资源路径</span>
+<span class="pl-c">     * <span class="pl-k">@param</span>   {String}    旧文件地址</span>
+<span class="pl-c">     * <span class="pl-k">@return</span>  {String}    新文件地址</span>
+<span class="pl-c">     */</span>
+    <span class="pl-en">resourceMap</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>) {
+        <span class="pl-k">return</span> file;
+    },
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 忽略资源</span>
+<span class="pl-c">     * <span class="pl-k">@param</span>   {String}    文件地址</span>
+<span class="pl-c">     * <span class="pl-k">@return</span>  {Boolean}   如果返回`true`则忽略当当前文件的加载</span>
+<span class="pl-c">     */</span>
+    <span class="pl-en">resourceIgnore</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>) {
+        <span class="pl-k">return</span> <span class="pl-c1">false</span>;
+    },
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 资源加载前的事件</span>
+<span class="pl-c">     * <span class="pl-k">@param</span>   {String}    文件地址</span>
+<span class="pl-c">     */</span>
+    <span class="pl-en">resourceBeforeLoad</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>) {
+    },
+
+    <span class="pl-c">/**</span>
+<span class="pl-c">     * 加载远程资源的自定义请求头</span>
+<span class="pl-c">     * <span class="pl-k">@param</span>   {String}    文件地址</span>
+<span class="pl-c">     * <span class="pl-k">@return</span>  {Object}</span>
+<span class="pl-c">     */</span>
+    <span class="pl-en">resourceRequestHeaders</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>) {
+        <span class="pl-k">return</span> {
+            <span class="pl-s"><span class="pl-pds">'</span>accept-encoding<span class="pl-pds">'</span></span><span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>gzip,deflate<span class="pl-pds">'</span></span>
+        };
+    }
+}</pre></div>
+
+<h2>
+<a id="运行单元测试" class="anchor" href="#%E8%BF%90%E8%A1%8C%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>运行单元测试</h2>
+
+<p>克隆源码，然后进入源码目录执行：</p>
+
+<div class="highlight highlight-source-shell"><pre>npm <span class="pl-c1">test</span></pre></div>
+
+<h2>
+<a id="支持的-dom-api" class="anchor" href="#%E6%94%AF%E6%8C%81%E7%9A%84-dom-api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>支持的 DOM API</h2>
+
+<ul>
+<li>Window
+
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/getComputedStyle">getComputedStyle()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleDeclaration">CSSStyleDeclaration()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSRule">CSSRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleRule">CSSStyleRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MediaList">MediaList()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSMediaRule">CSSMediaRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSImportRule">CSSImportRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSFontFaceRule">CSSFontFaceRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/StyleSheet">StyleSheet()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSStyleSheet">CSSStyleSheet()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSKeyframesRule">CSSKeyframesRule()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/CSSKeyframeRule">CSSKeyframeRule()</a></li>
+</ul>
+</li>
+<li>Document
+
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/URL">URL</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/documentElement">documentElement</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/head">head</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/body">body</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/title">title</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/styleSheets">styleSheets</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementsByTagName">getElementsByTagName()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/getElementById">getElementById()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector">querySelector()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelectorAll">querySelectorAll()</a></li>
+</ul>
+</li>
+<li>Element
+
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/id">id</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/tagName">tagName</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/className">className</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML">innerHTML</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/outerHTML">outerHTML</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.attributes">attributes</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/hasAttribute">hasAttribute()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute">getAttribute()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/querySelector">querySelector()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/querySelectorAll">querySelectorAll()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getElementsByTagName">getElementsByTagName()</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element/matches">matches()</a></li>
+</ul>
+</li>
+<li>HTMLElement
+
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLElement/style">style</a></li>
+</ul>
+</li>
+<li>Node
+
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeName">nodeName</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nodeType">nodeType</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.childNodes">childNodes</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.parentNode">parentNode</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.firstChild">firstChild</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.lastChild">lastChild</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.nextSibling">nextSibling</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.previousSibling">previousSibling</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.textContent">textContent</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Node.baseURI">baseURI</a></li>
+</ul>
+</li>
+</ul>
+
+<h2>
+<a id="注意事项" class="anchor" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>注意事项</h2>
+
+<ol>
+<li>不支持 XML 文档解析 </li>
+<li>所有的 DOM 属性均为只读（<em>计划在下一版本支持写入</em>）</li>
+<li>window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的原始值或继承属性，但没有进行计算输出（例如 em &gt; px）</li>
+<li>document.styleSheets 在浏览器中无法跨域访问 CSSOM，browser-x 没有做此限制</li>
+<li>不支持浏览器怪异模式</li>
+</ol>
+
+<h2>
+<a id="为什么使用-browser-x" class="anchor" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-browser-x" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>为什么使用 browser-x</h2>
+
+<p>browser-x 适合做这些事情：</p>
+
+<ol>
+<li>高效的爬虫程序，使用 CSS 选择器来收集内容</li>
+<li>分析元素的样式使用情况，例如和 CSS 相关的开发工具</li>
+</ol>
+
+<p>例如：WebFont 压缩工具——<a href="https://github.com/aui/font-spider">font-spider</a></p>
+
+<p>如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 <a href="https://github.com/tmpvar/jsdom">jsdom</a> 这个项目可能会更适合你（注意：它没有完整解析样式表）。</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/aui/browser-x">BrowserX</a> is maintained by <a href="https://github.com/aui">aui</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>

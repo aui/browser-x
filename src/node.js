@@ -25,6 +25,7 @@ function Node(ownerDocument, nodeName, nodeValue, nodeType) {
             writable: true
         },
         childNodes: {
+            enumerable: true,
             value: new NodeList([])
         },
         nodeName: {
@@ -42,61 +43,69 @@ function Node(ownerDocument, nodeName, nodeValue, nodeType) {
         ownerDocument: {
             enumerable: true,
             value: ownerDocument
-        },
-        baseURI: {
-            get: function() {
-                var base = ownerDocument.getElementsByTagName('base').item(0);
-                if (base) {
-                    return url.resolve(ownerDocument.URL, base.getAttribute('href'));
-                } else {
-                    return ownerDocument.URL;
-                }
-            }
         }
 
     });
 }
 
 Node.ELEMENT_NODE = 1;
-Node.ATTRIBUTE_NODE = 2;                // 废弃
+Node.ATTRIBUTE_NODE = 2; // 废弃
 Node.TEXT_NODE = 3;
-Node.CDATA_SECTION_NODE = 4;            // 废弃
-Node.ENTITY_REFERENCE_NODE = 5;         // 废弃
-Node.ENTITY_NODE = 6;                   // 废弃
+Node.CDATA_SECTION_NODE = 4; // 废弃
+Node.ENTITY_REFERENCE_NODE = 5; // 废弃
+Node.ENTITY_NODE = 6; // 废弃
 Node.PROCESSING_INSTRUCTION_NODE = 7;
 Node.COMMENT_NODE = 8;
 Node.DOCUMENT_NODE = 9;
 Node.DOCUMENT_TYPE_NODE = 10;
 Node.DOCUMENT_FRAGMENT_NODE = 11;
-Node.NOTATION_NODE = 12;                // 废弃
+Node.NOTATION_NODE = 12; // 废弃
 
 Node.prototype = Object.create(Object.prototype, {
     parentNode: {
+        enumerable: true,
         get: function() {
             return this._parent;
         }
     },
     firstChild: {
+        enumerable: true,
         get: function() {
             return this._first;
         }
     },
     lastChild: {
+        enumerable: true,
         get: function() {
             return this._last;
         }
     },
     nextSibling: {
+        enumerable: true,
         get: function() {
             return this._next;
         }
     },
     previousSibling: {
+        enumerable: true,
         get: function() {
             return this._previous;
         }
     },
+    baseURI: {
+        enumerable: true,
+        get: function() {
+            var ownerDocument = this.ownerDocument;
+            var base = ownerDocument.getElementsByTagName('base').item(0);
+            if (base) {
+                return url.resolve(ownerDocument.URL, base.getAttribute('href'));
+            } else {
+                return ownerDocument.URL;
+            }
+        }
+    },
     textContent: {
+        enumerable: true,
         get: function() {
             switch (this.nodeType) {
                 case Node.COMMENT_NODE:
@@ -127,6 +136,14 @@ Node.prototype = Object.create(Object.prototype, {
 });
 
 Node.prototype.constructor = Node;
+
+
+// Node.prototype.contains = function(element) {
+//     while ((element = element.parentNode) && element.nodeType == 1) {
+//         if (element === this) return true;
+//     }
+//     return false;
+// };
 
 Node.prototype.insertBefore = function(newChild) { // jshint ignore:line
     throw new Error('not yet implemented');

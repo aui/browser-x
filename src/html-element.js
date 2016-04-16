@@ -8,11 +8,7 @@ function HTMLElement(document, name, namespaceURI) {
 }
 
 HTMLElement.prototype = Object.create(Element.prototype, {
-    lang: {
-        get: function() {
-            return this.getAttribute('lang') || '';
-        }
-    },
+
     style: {
         get: function() {
             if (this._style) {
@@ -27,6 +23,13 @@ HTMLElement.prototype = Object.create(Element.prototype, {
 
                 return this._style;
             }
+        }
+    },
+
+    // support nwmatcher
+    lang: {
+        get: function() {
+            return this.getAttribute('lang') || '';
         }
     }
 });

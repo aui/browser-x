@@ -1,20 +1,15 @@
-# browser-x
+# BrowserX
 
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build Status][travis-ci-image]][travis-ci-url]
 
-[npm-image]: https://img.shields.io/npm/v/browser-x.svg
-[npm-url]: https://npmjs.org/package/browser-x
-[node-version-image]: https://img.shields.io/node/v/browser-x.svg
-[node-version-url]: http://nodejs.org/download/
-[downloads-image]: https://img.shields.io/npm/dm/browser-x.svg
-[downloads-url]: https://npmjs.org/package/browser-x
-[travis-ci-image]: https://travis-ci.org/aui/browser-x.svg?branch=master
-[travis-ci-url]: https://travis-ci.org/aui/browser-x
+BrowserX 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。
 
-browser-x 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。
+* 提供 DOM 核心方法与属性
+* 完整支持 CSS3 选择器来查询节点
+* 支持样式解析，如 `element.style`、`document.styleSheets`、`window.getComputedStyle()` 以及 CSSOM 构造器访问
 
 ## 安装
 
@@ -52,7 +47,7 @@ browser({
 ``` javascript
 {
     /**
-     * 文件基础路径
+     * 文件基础路径 - 支持本地或远程地址
      */
     url: 'about:blank',
 
@@ -192,14 +187,14 @@ npm test
 ## 注意事项
 
 1. 不支持 XML 文档解析 
-2. 所有的 DOM 属性均为只读（*计划在下一版本支持写入*）
+2. 所有的 DOM 属性均为只读（*计划在未来版本支持写入*）
 3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的原始值或继承属性，但没有进行计算输出（例如 em \> px）
-4. document.styleSheets 在浏览器中无法跨域访问 CSSOM，browser-x 没有做此限制
+4. document.styleSheets 在浏览器中无法跨域访问 CSSOM，BrowserX 没有做此限制（外部样式需要打开 `loadCssFile` 选项）
 5. 不支持浏览器怪异模式
 
-## 为什么使用 browser-x
+## 为什么使用 BrowserX
 
-browser-x 适合做这些事情：
+BrowserX 适合做这些事情：
 
 1. 高效的爬虫程序，使用 CSS 选择器来收集内容
 2. 分析元素的样式使用情况，例如和 CSS 相关的开发工具
@@ -207,3 +202,13 @@ browser-x 适合做这些事情：
 例如：WebFont 压缩工具——[font-spider](https://github.com/aui/font-spider)
 
 如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（注意：它没有完整解析样式表）。
+
+
+[npm-image]: https://img.shields.io/npm/v/browser-x.svg
+[npm-url]: https://npmjs.org/package/browser-x
+[node-version-image]: https://img.shields.io/node/v/browser-x.svg
+[node-version-url]: http://nodejs.org/download/
+[downloads-image]: https://img.shields.io/npm/dm/browser-x.svg
+[downloads-url]: https://npmjs.org/package/browser-x
+[travis-ci-image]: https://travis-ci.org/aui/browser-x.svg?branch=master
+[travis-ci-url]: https://travis-ci.org/aui/browser-x

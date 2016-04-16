@@ -18,7 +18,7 @@ BrowserAdapter.prototype = {
     constructor: BrowserAdapter,
 
     /**
-     * 文件基础路径
+     * 文件基础路径 - 支持本地或远程地址
      * @type    {String}
      */
     url: 'about:blank',

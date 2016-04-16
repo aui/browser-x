@@ -178,7 +178,7 @@ npm test
 ## 注意事项
 
 1. 不支持 XML 文档解析 
-2. 所有的 DOM 属性均为只读（*计划在下一版本支持*）
+2. 所有的 DOM 属性均为只读（*计划在下一版本支持写入*）
 3. window.getComputedStyle() 仅能获取元素或伪元素在 CSS 中定义的原始值或继承属性，但没有进行计算输出（例如 em \> px）
 4. document.styleSheets 在浏览器中无法跨域访问 CSSOM，browser-x 没有做此限制
 5. 不支持浏览器怪异模式
@@ -187,11 +187,9 @@ npm test
 
 browser-x 适合做这些事情：
 
-1. 爬虫程序
+1. 高效的爬虫程序，使用 CSS 选择器来收集内容
 2. 分析元素的样式使用情况，例如和 CSS 相关的开发工具
 
-如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（它唯一没有做好的是样式解析）。
+例如：WebFont 压缩工具——[font-spider](https://github.com/aui/font-spider)
 
-### 它们在使用 browser-x
-
-1. [font-spider](https://github.com/aui/font-spider)
+如果需要更多的 DOM 特性，例如跑基于 DOM 的测试脚本、甚至载入 jQuery 等，那么 [jsdom](https://github.com/tmpvar/jsdom) 这个项目可能会更适合你（注意：它没有完整解析样式表）。

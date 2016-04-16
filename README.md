@@ -1,5 +1,19 @@
 # browser-x
 
+[![NPM Version][npm-image]][npm-url]
+[![NPM Downloads][downloads-image]][downloads-url]
+[![Node.js Version][node-version-image]][node-version-url]
+[![Build Status][travis-ci-image]][travis-ci-url]
+
+[npm-image]: https://img.shields.io/npm/v/browser-x.svg
+[npm-url]: https://npmjs.org/package/browser-x
+[node-version-image]: https://img.shields.io/node/v/browser-x.svg
+[node-version-url]: http://nodejs.org/download/
+[downloads-image]: https://img.shields.io/npm/dm/browser-x.svg
+[downloads-url]: https://npmjs.org/package/browser-x
+[travis-ci-image]: https://travis-ci.org/aui/browser-x.svg?branch=master
+[travis-ci-url]: https://travis-ci.org/aui/browser-x
+
 browser-x 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。
 
 ## 安装

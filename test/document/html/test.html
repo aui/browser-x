@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <base href="htts://www.font-spider.org:80/">
+    <title>test</title>
+    <style id="style">.test::after{content:'<>'}</style>
+    <style>
+        #div {
+            color: red;
+        }
+        #div::after {
+            content: '<sss>';
+        }
+    </style>
+</head>
+<body>
+    <h1 id="h1"><em>h1</em></h1>
+    <div id="div" class="tt">hello</div>
+    <DIV id="DIV2"></DIV>
+    <div name="name"></div>
+    <!--  -->
+    <form action="http://www.baidu.com/q">
+        <button id="button" disabled>value</button>
+        <input id="input" disabled="false">
+        <input id="radio" disabled value="he" type="radio">
+        <input id="checkbox" checked="" type="checkbox">
+
+        <select name="select" id="select">
+            <option value="01">01</option>
+            <option selected value="02">02</option>
+            <option>03</option>
+        </select>
+        <!--  -->
+        <div>
+            <textarea name="textarea" id="textarea" cols="30" rows="10"><code>...</code></textarea>
+        </div>
+    </form>
+    <!--  -->
+    <a id="a" href="api/test.html?id=1#title" style="display: block;">link</a>
+    <a id="a2">link</a>
+    <script id="script"><!-- hello -->console.log('<>')</script>
+    <div id="text-content">text-content</div>
+    <textarea id="text-content-textarea">text-content-textarea</textarea>
+    <div id="text-content-escape">&#60;&#62;&#34;&#39;&#38;</div>
+</body>
+</html>

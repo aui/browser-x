@@ -8,9 +8,9 @@ function HTMLSelectElement(document, name, namespaceURI) {
 
 HTMLSelectElement.prototype = Object.create(HTMLElement.prototype, {
     options: {
-        // TODO HTMLOptionsCollection
+        // TODO return HTMLOptionsCollection
         get: function() {
-            return this.querySelectorAll('option');
+            return this.getElementsByTagName('option');
         }
     },
     multiple: {

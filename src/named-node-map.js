@@ -2,7 +2,7 @@
 
 function NamedNodeMap() {
     Object.defineProperties(this, {
-        _index: {
+        _indexs: {
             value: {}
         }
     });
@@ -15,12 +15,12 @@ NamedNodeMap.prototype = {
     length: 0,
 
     getNamedItem: function(name) {
-        return this[this._index[name]] || null;
+        return this[this._indexs[name]] || null;
     },
 
     setNamedItem: function(node) {
         var name = node.nodeName;
-        var index = this._index[name];
+        var index = this._indexs[name];
 
         this[name] = node;
 
@@ -31,7 +31,7 @@ NamedNodeMap.prototype = {
             return oldNode;
         } else {
             this[this.length] = node;
-            this._index[name] = this.length;
+            this._indexs[name] = this.length;
             this.length++;
 
             return null;
@@ -39,7 +39,7 @@ NamedNodeMap.prototype = {
     },
 
     removeNamedItem: function(name) {
-        var index = this._index[name];
+        var index = this._indexs[name];
 
         delete this[name];;
 
@@ -50,7 +50,7 @@ NamedNodeMap.prototype = {
 
             // 重建索引
             while (++index < length) {
-                this._index[this[index].nodeName] = index;
+                this._indexs[this[index].nodeName] = index;
             }
 
             return node;

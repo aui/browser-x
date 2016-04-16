@@ -6,7 +6,7 @@ var elements = {
     'IMG': require('./html-image-element'),
     'LINK': require('./html-link-element'),
 
-    'FORM': require('./html-form-element'),
+    // support nwmatcher
     'BUTTON': require('./html-button-element'),
     'INPUT': require('./html-input-element'),
     'SELECT': require('./html-select-element'),

@@ -8,6 +8,18 @@ var assert = require('assert');
 describe('getComputedStyle', function() {
     describe('getComputedStyle(node, pseudo)', function() {
 
+        describe('index.html', function() {
+            var url = __dirname + '/html/index.html';
+            var html = fs.readFileSync(url, 'utf8');
+            var window = browser.sync(html, {
+                url: url,
+                loadCssFile: false
+            });
+            it('#test::after', function() {
+                assert.equal('"hello world\\\"" attr(id) "\\\""', window.document.styleSheets[0].cssRules[0].style.content);
+            });
+        });
+
         describe('pseudo1.html', function() {
             var url = __dirname + '/html/pseudo1.html';
             var html = fs.readFileSync(url, 'utf8');

@@ -26,10 +26,11 @@ function loadCssFiles(document, resource) {
             loadQueue.push(loadImportFile(baseURI, cssStyleSheet));
         } else if (nodeName === 'LINK') {
             var href = ownerNode.href;
-            loadQueue.push(resource.get(href).then(function(data) {
+            var file = decodeURIComponent(href);
+            loadQueue.push(resource.get(file).then(function(data) {
                 data = getContent(data);
 
-                var cssStyleSheet = cssParse(data, href);
+                var cssStyleSheet = cssParse(data, file);
                 cssStyleSheet.href = href;
 
                 // TODO 在真正的浏览器中跨域，cssStyleSheet.cssRules 会等于 null
@@ -48,14 +49,16 @@ function loadCssFiles(document, resource) {
             if (cssStyleRule instanceof cssom.CSSImportRule) {
 
                 var href = cssStyleRule.href;
-                var file = url.resolve(baseURI, href);
+                href = url.resolve(baseURI, href);
+
+                var file = decodeURIComponent(href);
 
                 loadQueue.push(resource.get(file).then(function(data) {
                     data = getContent(data);
-                    var baseURI = file;
+                    var baseURI = href;
                     var cssStyleSheet = cssParse(data, file);
                     cssStyleSheet.parentStyleSheet = cssStyleSheet;
-                    cssStyleSheet.href = file;
+                    cssStyleSheet.href = href;
                     cssStyleRule.styleSheet = cssStyleSheet;
                     return loadImportFile(baseURI, cssStyleSheet);
                 }, onerror));

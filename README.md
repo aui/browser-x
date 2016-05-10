@@ -7,9 +7,9 @@
 
 BrowserX 是一个基于 NodeJS 实现的轻量级“浏览器”，它的目标是高效的实现 DOM 中最核心的特性，以便开发者能够在 NodeJS 中使用 W3C 标准方法来操作文档与样式。
 
-* 提供 DOM 核心方法与属性
+* 提供 DOM 核心核心
 * 完整支持 CSS3 选择器来查询节点
-* 支持样式解析，如 `element.style`、`document.styleSheets`、`window.getComputedStyle()` 以及 CSSOM 构造器访问
+* 支持样式解析，如 `element.style`、`document.styleSheets`、`window.getComputedStyle()` 以及 CSSOM 相关构造器访问
 
 ## 安装
 
@@ -121,14 +121,6 @@ browser({
         };
     }
 }
-```
-
-## 运行单元测试
-
-克隆源码，然后进入源码目录执行：
-
-```shell
-npm test
 ```
 
 ## 支持的 DOM API
